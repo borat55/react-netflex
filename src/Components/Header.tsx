@@ -1,16 +1,15 @@
 import { Link, useMatch } from "react-router-dom";
 import styled from "styled-components";
-import { motion } from "framer-motion";
-import React, { useState } from "react";
+import { motion, useScroll, useAnimation } from "framer-motion";
+import React, { useState, useEffect } from "react";
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: fixed;
   width: 100%;
   top: 0;
-  background-color: black;
   font-size: 14px;
   padding: 20px 60px;
   color: white;
@@ -28,7 +27,7 @@ const Logo = styled(motion.svg)`
   fill: ${(props) => props.theme.red};
   path {
     stroke-width: 6px;
-    stroke: ${(props) => props.theme.red};
+    stroke: ${(props) => props.theme.white.lighter};
   }
 `;
 
@@ -83,6 +82,9 @@ const Searchinput = styled(motion.input)`
   font-size: 16px;
   background-color: transparent;
   border: 1px solid ${(props) => props.theme.white.lighter};
+  &::placeholder {
+    color: white;
+  }
 `;
 
 const logoVariants = {
@@ -97,17 +99,34 @@ const logoVariants = {
   },
 };
 
+const navVariants = {
+  up: { backgroundColor: "rgba(0,0,0,0)" },
+  scroll: { backgroundColor: "rgba(0,0,0,1)" },
+};
+
 function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const homeMatch = useMatch("/");
   const tvMatch = useMatch("/tv");
+  const navAnimation = useAnimation();
+  const { scrollY } = useScroll();
 
   const toggleSearch = () => {
     setSearchOpen((pre) => !pre);
   };
 
+  useEffect(() => {
+    scrollY.on("change", () => {
+      if (scrollY.get() > 80) {
+        navAnimation.start("scroll");
+      } else {
+        navAnimation.start("up");
+      }
+    });
+  }, [scrollY]);
+
   return (
-    <Nav>
+    <Nav initial={"up"} variants={navVariants} animate={navAnimation}>
       <Col>
         <Logo
           variants={logoVariants}
@@ -149,6 +168,7 @@ function Header() {
           </motion.svg>
           <Searchinput
             animate={{ scaleX: searchOpen ? 1 : 0 }}
+            initial={{ scaleX: 0 }}
             transition={{ type: "leaner" }}
             placeholder="Search for movie or TV show"
           />
