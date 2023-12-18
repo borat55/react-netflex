@@ -8,6 +8,7 @@ import App from "./App";
 import GlobalStyle from "./style/GlobalStyle";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { theme } from "./style/theme";
+import HelmetComponent from "./style/HelmetComponent";
 
 const client = new QueryClient();
 
@@ -18,6 +19,7 @@ root.render(
     <RecoilRoot>
       <QueryClientProvider client={client}>
         <ThemeProvider theme={theme}>
+          <HelmetComponent />
           <GlobalStyle />
           <App />
         </ThemeProvider>
