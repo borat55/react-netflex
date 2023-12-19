@@ -121,7 +121,10 @@ function Home() {
                   .map((movie) => (
                     <MovieBox
                       key={movie.id}
-                      $bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                      $bgPhoto={makeImagePath(
+                        movie.backdrop_path || movie.poster_path,
+                        "w500"
+                      )}
                     />
                   ))}
               </Row>
