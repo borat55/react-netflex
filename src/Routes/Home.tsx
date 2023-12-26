@@ -94,10 +94,35 @@ const ChosenMovie = styled(motion.div)`
   position: absolute;
   width: 40vw;
   height: 80vh;
-  background-color: red;
+  background-color: ${(props) => props.theme.black.lighter};
   right: 0;
   left: 0;
   margin: 0 auto;
+  border-radius: 15px;
+  overflow: hidden;
+`;
+
+const ChosenMovieCover = styled.div`
+  width: 100%;
+  height: 400px;
+  background-size: cover;
+  background-position: center center;
+`;
+
+const ChosenMovieTitle = styled.h2`
+  color: ${(props) => props.theme.white.lighter};
+  font-size: 40px;
+  position: relative;
+  top: -60px;
+  padding: 10px;
+`;
+
+const ChosenMovieOverview = styled.p`
+  color: ${(props) => props.theme.white.lighter};
+  font-size: 24px;
+  position: relative;
+  top: -70px;
+  padding: 20px;
 `;
 
 const rowVariants = {
@@ -151,6 +176,7 @@ function Home() {
   );
 
   const [index, setIndex] = useState(0);
+
   const increaseIndex = () => {
     if (data) {
       if (leaving) return;
@@ -160,6 +186,7 @@ function Home() {
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
+
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((pre) => !pre);
 
@@ -171,6 +198,12 @@ function Home() {
     navigate(-1);
   };
 
+  const clickedMovie =
+    chosenMovieMatch?.params.movieId &&
+    data?.results.find(
+      (movie) => String(movie.id) === chosenMovieMatch.params.movieId
+    );
+
   return (
     <Wrapper>
       {isLoading ? (
@@ -178,7 +211,11 @@ function Home() {
       ) : (
         <>
           <Banner
-            $bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}
+            $bgPhoto={makeImagePath(
+              data?.results[0].backdrop_path ||
+                data?.results[0].poster_path ||
+                ""
+            )}
           >
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
@@ -215,13 +252,13 @@ function Home() {
                       </MovieBoxInfo>
                     </MovieBox>
                   ))}
-                <button
-                  style={{ width: 40, height: 100, cursor: "pointer" }}
-                  onClick={increaseIndex}
-                >
-                  ➡
-                </button>
               </Row>
+              <button
+                style={{ width: 40, height: 100, cursor: "pointer" }}
+                onClick={increaseIndex}
+              >
+                ➡
+              </button>
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
@@ -236,7 +273,22 @@ function Home() {
                   style={{ top: scrollY.get() + 100 }}
                   layoutId={chosenMovieMatch.params.movieId}
                 >
-                  <div>Let's put some movie information.</div>
+                  {clickedMovie && (
+                    <>
+                      <ChosenMovieCover
+                        style={{
+                          backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
+                            clickedMovie.backdrop_path,
+                            "w500"
+                          )})`,
+                        }}
+                      />
+                      <ChosenMovieTitle>{clickedMovie.title}</ChosenMovieTitle>
+                      <ChosenMovieOverview>
+                        {clickedMovie.overview}
+                      </ChosenMovieOverview>
+                    </>
+                  )}
                 </ChosenMovie>
               </>
             ) : null}
