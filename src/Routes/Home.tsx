@@ -52,6 +52,13 @@ const Row = styled(motion.div)`
   width: 100%;
 `;
 
+const RowBtn = styled.button`
+  width: 40px;
+  height: 200px;
+  cursor: pointer;
+  position: relative;
+`;
+
 const MovieBox = styled(motion.div)<{ $bgPhoto: string }>`
   background-color: white;
   height: 200px;
@@ -253,12 +260,14 @@ function Home() {
                     </MovieBox>
                   ))}
               </Row>
-              <button
-                style={{ width: 40, height: 100, cursor: "pointer" }}
+              <RowBtn
+                style={{
+                  left: "97%",
+                }}
                 onClick={increaseIndex}
               >
                 ➡
-              </button>
+              </RowBtn>
             </AnimatePresence>
           </Slider>
           <AnimatePresence>
