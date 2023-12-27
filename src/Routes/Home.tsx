@@ -53,10 +53,21 @@ const Row = styled(motion.div)`
 `;
 
 const RowBtn = styled.button`
-  width: 40px;
-  height: 200px;
+  background-color: transparent;
+  border: none;
+  width: 50px;
+  height: 50px;
   cursor: pointer;
-  position: relative;
+  position: absolute;
+  padding: 10px;
+  svg {
+    fill: rgb(238, 238, 238);
+  }
+  &:hover {
+    svg {
+      fill: rgba(238, 238, 238, 0.7);
+    }
+  }
 `;
 
 const MovieBox = styled(motion.div)<{ $bgPhoto: string }>`
@@ -133,15 +144,15 @@ const ChosenMovieOverview = styled.p`
 `;
 
 const rowVariants = {
-  hidden: {
-    x: window.outerWidth + 5,
-  },
+  hidden: (isBack: boolean) => ({
+    x: isBack ? -window.outerWidth + 5 : window.outerWidth + 5,
+  }),
   visible: {
     x: 0,
   },
-  exit: {
-    x: -window.outerWidth - 5,
-  },
+  exit: (isBack: boolean) => ({
+    x: isBack ? window.outerWidth + 5 : -window.outerWidth - 5,
+  }),
 };
 
 const infoVariants = {
@@ -183,6 +194,7 @@ function Home() {
   );
 
   const [index, setIndex] = useState(0);
+  const [back, isBack] = useState(false);
 
   const increaseIndex = () => {
     if (data) {
@@ -190,7 +202,19 @@ function Home() {
       toggleLeaving();
       const totalMovies = data.results.length - 1;
       const maxIndex = Math.ceil(totalMovies / offset) - 1;
+      isBack(false);
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+    }
+  };
+
+  const decreaseIndex = () => {
+    if (data) {
+      if (leaving) return;
+      toggleLeaving();
+      const totalMovies = data.results.length - 1;
+      const maxIndex = Math.ceil(totalMovies / offset) - 1;
+      isBack(true);
+      setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
     }
   };
 
@@ -228,8 +252,13 @@ function Home() {
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
           <Slider>
-            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+            <AnimatePresence
+              custom={back}
+              initial={false}
+              onExitComplete={toggleLeaving}
+            >
               <Row
+                custom={back}
                 variants={rowVariants}
                 initial={"hidden"}
                 animate={"visible"}
@@ -260,13 +289,15 @@ function Home() {
                     </MovieBox>
                   ))}
               </Row>
-              <RowBtn
-                style={{
-                  left: "97%",
-                }}
-                onClick={increaseIndex}
-              >
-                ➡
+              <RowBtn style={{ top: 80 }} onClick={decreaseIndex}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 278.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
+                </svg>
+              </RowBtn>
+              <RowBtn style={{ top: 80, right: 10 }} onClick={increaseIndex}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                  <path d="M342.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L274.7 256 105.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                </svg>
               </RowBtn>
             </AnimatePresence>
           </Slider>
