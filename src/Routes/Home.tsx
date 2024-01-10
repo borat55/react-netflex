@@ -115,11 +115,12 @@ const Overlay = styled(motion.div)`
 
 const ChosenMovie = styled(motion.div)`
   position: absolute;
-  width: 40vw;
-  height: 80vh;
-  background-color: ${(props) => props.theme.black.lighter};
+  width: 50vw;
+  height: 90vh;
+  background-color: ${(props) => props.theme.black.darker};
   right: 0;
   left: 0;
+  z-index: 3;
   margin: 0 auto;
   border-radius: 15px;
   overflow: hidden;
@@ -135,26 +136,67 @@ const ChosenMovieCover = styled.div`
 const ChosenMovieTitle = styled.h2`
   color: ${(props) => props.theme.white.lighter};
   font-size: 40px;
+  font-weight: 700;
   position: relative;
   top: -60px;
+  left: 20px;
   padding: 10px;
 `;
 
-const ChosenMovieTagline = styled.h3``;
-
-const ChosenMovieReleaseDate = styled.h4``;
-
-const ChosenMovieGenre = styled.h4`
-  margin: 50px;
+const TitleTaglineBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const ChosenMovieTagline = styled.h3`
+  color: #b1b0b0;
+  font-size: 17px;
+  font-weight: 600;
+  position: relative;
+  top: -65px;
+  left: 35px;
+  &:first-child {
+    margin-right: 3px;
+  }
 `;
 
-const ChosenMovieRate = styled.h4``;
+const YearGenreRateBox = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  top: -30px;
+  left: 35px;
+`;
+
+const ChosenMovieReleaseDate = styled.h4`
+  border: 1px solid ${(props) => props.theme.white.darker};
+  border-radius: 3px;
+  padding: 2px 3px;
+  color: #1cc11c;
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 13px;
+`;
+
+const ChosenMovieGenre = styled.h4`
+  color: ${(props) => props.theme.white.darker};
+  font-size: 20px;
+  font-weight: 600;
+  margin-right: 5px;
+`;
+
+const ChosenMovieRate = styled.h4`
+  color: ${(props) => props.theme.white.darker};
+  font-size: 20px;
+  font-weight: 600;
+  margin-left: 8px;
+`;
 
 const ChosenMovieOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
-  font-size: 24px;
+  font-size: 18px;
   position: relative;
-  top: -70px;
+  top: -15px;
+  left: 15px;
   padding: 20px;
 `;
 
@@ -197,24 +239,6 @@ const movieBoxVariants = {
 };
 
 const offset = 6;
-
-// const aMovie = {
-//   adult: false,
-//   backdrop_path: "/jXJxMcVoEuXzym3vFnjqDW4ifo6.jpg",
-//   genre_ids: [28, 12, 14],
-//   id: 572802,
-//   original_language: "en",
-//   original_title: "Aquaman and the Lost Kingdom",
-//   overview:
-//     "Black Manta, still driven by the need to avenge his father's death and wielding the power of the mythic Black Trident, will stop at nothing to take Aquaman down once and for all. To defeat him, Aquaman must turn to his imprisoned brother Orm, the former King of Atlantis, to forge an unlikely alliance in order to save the world from irreversible destruction.",
-//   popularity: 1536.539,
-//   poster_path: "/8xV47NDrjdZDpkVcCFqkdHa3T0C.jpg",
-//   release_date: "2023-12-20",
-//   title: "Aquaman and the Lost Kingdom",
-//   video: false,
-//   vote_average: 6.491,
-//   vote_count: 411,
-// };
 
 function Home() {
   const { scrollY } = useScroll();
@@ -349,14 +373,14 @@ function Home() {
                   exit={{ opacity: 0 }}
                 />
                 <ChosenMovie
-                  style={{ top: scrollY.get() + 100 }}
+                  style={{ top: scrollY.get() + 40 }}
                   layoutId={chosenMovieMatch.params.movieId}
                 >
                   {clickedMovie && (
                     <>
                       <ChosenMovieCover
                         style={{
-                          backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
+                          backgroundImage: `linear-gradient(to top, rgb(24,24,24),35%, transparent), url(${makeImagePath(
                             clickedMovie.backdrop_path,
                             "w500"
                           )})`,
@@ -365,18 +389,30 @@ function Home() {
                       <ChosenMovieTitle>
                         {movieDetail?.original_title}
                       </ChosenMovieTitle>
-                      <ChosenMovieTagline>
-                        {movieDetail?.tagline}
-                      </ChosenMovieTagline>
-                      <ChosenMovieReleaseDate>
-                        {movieDetail?.release_date}
-                      </ChosenMovieReleaseDate>
-                      {movieDetail?.genres.map((genre) => (
-                        <ChosenMovieGenre>{genre.name}</ChosenMovieGenre>
-                      ))}
-                      <ChosenMovieRate>
-                        {movieDetail?.vote_average}
-                      </ChosenMovieRate>
+                      <TitleTaglineBox>
+                        <ChosenMovieTagline>
+                          {movieDetail?.original_title} :
+                        </ChosenMovieTagline>
+
+                        <ChosenMovieTagline>
+                          {movieDetail?.tagline}
+                        </ChosenMovieTagline>
+                      </TitleTaglineBox>
+
+                      <YearGenreRateBox>
+                        <ChosenMovieReleaseDate>
+                          {movieDetail?.release_date.slice(0, 4)}
+                        </ChosenMovieReleaseDate>
+                        {movieDetail?.genres.map((genre, index) => (
+                          <ChosenMovieGenre key={genre.id}>
+                            {genre.name}
+                            {index !== movieDetail.genres.length - 1 && " ·"}
+                          </ChosenMovieGenre>
+                        ))}
+                        <ChosenMovieRate>
+                          ⭐{movieDetail?.vote_average.toFixed(1)}
+                        </ChosenMovieRate>
+                      </YearGenreRateBox>
                       <ChosenMovieOverview>
                         {movieDetail?.overview}
                       </ChosenMovieOverview>
