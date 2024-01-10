@@ -130,7 +130,7 @@ function Header() {
         navAnimation.start("up");
       }
     });
-  }, [scrollY]);
+  }, [navAnimation, scrollY]);
 
   const { register, handleSubmit } = useForm<IForm>();
   const onValid = (data: IForm) => {

@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import {
-  IMovie,
   IGetMoviesResult,
   IMovieDetails,
   getMovieDetails,
