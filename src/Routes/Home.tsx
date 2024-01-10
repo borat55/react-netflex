@@ -1,5 +1,11 @@
 import styled from "styled-components";
-import { IGetMoviesResult, getMovies } from "../api";
+import {
+  IMovie,
+  IGetMoviesResult,
+  IMovieDetails,
+  getMovieDetails,
+  getMovies,
+} from "../api";
 import { useQuery } from "react-query";
 import { makeImagePath } from "../utils";
 import { motion, AnimatePresence, useScroll } from "framer-motion";
@@ -135,6 +141,16 @@ const ChosenMovieTitle = styled.h2`
   padding: 10px;
 `;
 
+const ChosenMovieTagline = styled.h3``;
+
+const ChosenMovieReleaseDate = styled.h4``;
+
+const ChosenMovieGenre = styled.h4`
+  margin: 50px;
+`;
+
+const ChosenMovieRate = styled.h4``;
+
 const ChosenMovieOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
   font-size: 24px;
@@ -183,24 +199,48 @@ const movieBoxVariants = {
 
 const offset = 6;
 
+// const aMovie = {
+//   adult: false,
+//   backdrop_path: "/jXJxMcVoEuXzym3vFnjqDW4ifo6.jpg",
+//   genre_ids: [28, 12, 14],
+//   id: 572802,
+//   original_language: "en",
+//   original_title: "Aquaman and the Lost Kingdom",
+//   overview:
+//     "Black Manta, still driven by the need to avenge his father's death and wielding the power of the mythic Black Trident, will stop at nothing to take Aquaman down once and for all. To defeat him, Aquaman must turn to his imprisoned brother Orm, the former King of Atlantis, to forge an unlikely alliance in order to save the world from irreversible destruction.",
+//   popularity: 1536.539,
+//   poster_path: "/8xV47NDrjdZDpkVcCFqkdHa3T0C.jpg",
+//   release_date: "2023-12-20",
+//   title: "Aquaman and the Lost Kingdom",
+//   video: false,
+//   vote_average: 6.491,
+//   vote_count: 411,
+// };
+
 function Home() {
   const { scrollY } = useScroll();
   const navigate = useNavigate();
   const chosenMovieMatch = useMatch("/movies/:movieId");
 
-  const { data, isLoading } = useQuery<IGetMoviesResult>(
-    ["movies", "nowPlaying"],
-    getMovies
-  );
+  const { data: nowPlayingMovies, isLoading: moviesLoading } =
+    useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
+
+  const { data: movieDetail, isLoading: movieDetailLoading } =
+    useQuery<IMovieDetails>(
+      ["movie_detail", chosenMovieMatch?.params.movieId],
+      () => getMovieDetails(Number(chosenMovieMatch?.params.movieId))
+    );
+
+  const loading = moviesLoading || movieDetailLoading;
 
   const [index, setIndex] = useState(0);
   const [back, isBack] = useState(false);
 
   const increaseIndex = () => {
-    if (data) {
-      if (leaving) return;
+    if (nowPlayingMovies) {
+      if (loading) return;
       toggleLeaving();
-      const totalMovies = data.results.length - 1;
+      const totalMovies = nowPlayingMovies.results.length - 1;
       const maxIndex = Math.ceil(totalMovies / offset) - 1;
       isBack(false);
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
@@ -208,10 +248,10 @@ function Home() {
   };
 
   const decreaseIndex = () => {
-    if (data) {
+    if (nowPlayingMovies) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data.results.length - 1;
+      const totalMovies = nowPlayingMovies.results.length - 1;
       const maxIndex = Math.ceil(totalMovies / offset) - 1;
       isBack(true);
       setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
@@ -231,25 +271,25 @@ function Home() {
 
   const clickedMovie =
     chosenMovieMatch?.params.movieId &&
-    data?.results.find(
+    nowPlayingMovies?.results.find(
       (movie) => String(movie.id) === chosenMovieMatch.params.movieId
     );
 
   return (
     <Wrapper>
-      {isLoading ? (
+      {loading ? (
         <Loader>Loading...</Loader>
       ) : (
         <>
           <Banner
             $bgPhoto={makeImagePath(
-              data?.results[0].backdrop_path ||
-                data?.results[0].poster_path ||
+              nowPlayingMovies?.results[0].backdrop_path ||
+                nowPlayingMovies?.results[0].poster_path ||
                 ""
             )}
           >
-            <Title>{data?.results[0].title}</Title>
-            <Overview>{data?.results[0].overview}</Overview>
+            <Title>{nowPlayingMovies?.results[0].title}</Title>
+            <Overview>{nowPlayingMovies?.results[0].overview}</Overview>
           </Banner>
           <Slider>
             <AnimatePresence
@@ -266,7 +306,7 @@ function Home() {
                 exit={"exit"}
                 key={index}
               >
-                {data?.results
+                {nowPlayingMovies?.results
                   .slice(1)
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
@@ -323,9 +363,23 @@ function Home() {
                           )})`,
                         }}
                       />
-                      <ChosenMovieTitle>{clickedMovie.title}</ChosenMovieTitle>
+                      <ChosenMovieTitle>
+                        {movieDetail?.original_title}
+                      </ChosenMovieTitle>
+                      <ChosenMovieTagline>
+                        {movieDetail?.tagline}
+                      </ChosenMovieTagline>
+                      <ChosenMovieReleaseDate>
+                        {movieDetail?.release_date}
+                      </ChosenMovieReleaseDate>
+                      {movieDetail?.genres.map((genre) => (
+                        <ChosenMovieGenre>{genre.name}</ChosenMovieGenre>
+                      ))}
+                      <ChosenMovieRate>
+                        {movieDetail?.vote_average}
+                      </ChosenMovieRate>
                       <ChosenMovieOverview>
-                        {clickedMovie.overview}
+                        {movieDetail?.overview}
                       </ChosenMovieOverview>
                     </>
                   )}

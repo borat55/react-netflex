@@ -9,6 +9,7 @@ import GlobalStyle from "./style/GlobalStyle";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { theme } from "./style/theme";
 import HelmetComponent from "./style/HelmetComponent";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const client = new QueryClient();
 
@@ -22,6 +23,7 @@ root.render(
           <HelmetComponent />
           <GlobalStyle />
           <App />
+          <ReactQueryDevtools initialIsOpen={true} />
         </ThemeProvider>
       </QueryClientProvider>
     </RecoilRoot>
