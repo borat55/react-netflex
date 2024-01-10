@@ -39,6 +39,25 @@ export interface IMovieDetails {
   vote_average: number;
 }
 
+export interface IMovieCredits {
+  cast: [
+    {
+      id: number;
+      known_for_department: string;
+      name: string;
+      character: string;
+    }
+  ];
+  crew: [
+    {
+      id: number;
+      known_for_department: string;
+      name: string;
+      job: string;
+    }
+  ];
+}
+
 export function getMovies() {
   return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(
     (response) => response.json()
@@ -47,6 +66,12 @@ export function getMovies() {
 
 export function getMovieDetails(movieId: number) {
   return fetch(`${BASE_PATH}/movie/${movieId}?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
+
+export function getMovieCredits(movieId: number) {
+  return fetch(`${BASE_PATH}/movie/${movieId}/credits?api_key=${API_KEY}`).then(
     (response) => response.json()
   );
 }

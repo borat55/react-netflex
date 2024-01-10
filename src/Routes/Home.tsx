@@ -2,8 +2,10 @@ import styled from "styled-components";
 import {
   IGetMoviesResult,
   IMovieDetails,
-  getMovieDetails,
+  IMovieCredits,
   getMovies,
+  getMovieDetails,
+  getMovieCredits,
 } from "../api";
 import { useQuery } from "react-query";
 import { makeImagePath } from "../utils";
@@ -191,13 +193,30 @@ const ChosenMovieRate = styled.h4`
   margin-left: 8px;
 `;
 
+const OverviewCreditBox = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+`;
+
 const ChosenMovieOverview = styled.p`
   color: ${(props) => props.theme.white.lighter};
   font-size: 18px;
-  position: relative;
-  top: -15px;
-  left: 15px;
-  padding: 20px;
+  width: 60%;
+  line-height: 25px;
+`;
+
+const MovieCreditsBox = styled.div`
+  width: 30%;
+`;
+
+const MovieCasts = styled.h4`
+  display: inline-block;
+  margin-right: 3px;
+  line-height: 25px;
+`;
+
+const MovieDirector = styled.h4`
+  margin-top: 10px;
 `;
 
 const rowVariants = {
@@ -254,7 +273,13 @@ function Home() {
       () => getMovieDetails(Number(chosenMovieMatch?.params.movieId))
     );
 
-  const loading = moviesLoading || movieDetailLoading;
+  const { data: movieCredits, isLoading: movieCreditsLoading } =
+    useQuery<IMovieCredits>(
+      ["movie_credits", chosenMovieMatch?.params.movieId],
+      () => getMovieCredits(Number(chosenMovieMatch?.params.movieId))
+    );
+
+  const loading = moviesLoading || movieDetailLoading || movieCreditsLoading;
 
   const [index, setIndex] = useState(0);
   const [back, isBack] = useState(false);
@@ -413,9 +438,32 @@ function Home() {
                           ⭐{movieDetail?.vote_average.toFixed(1)}
                         </ChosenMovieRate>
                       </YearGenreRateBox>
-                      <ChosenMovieOverview>
-                        {movieDetail?.overview}
-                      </ChosenMovieOverview>
+                      <OverviewCreditBox>
+                        <ChosenMovieOverview>
+                          {movieDetail?.overview}
+                        </ChosenMovieOverview>
+                        <MovieCreditsBox>
+                          {movieCredits?.cast.slice(0, 4).map((actor, index) =>
+                            actor.known_for_department === "Acting" ? (
+                              <MovieCasts key={actor.id}>
+                                {index === 0 ? "Casting : " : null}
+                                {actor.name}
+                                {index !==
+                                movieCredits.cast.slice(0, 4).length - 1
+                                  ? ","
+                                  : null}
+                              </MovieCasts>
+                            ) : null
+                          )}
+                          {movieCredits?.crew.map((director, index) =>
+                            director.job === "Director" ? (
+                              <MovieDirector key={director.id}>
+                                Director : {director.name}
+                              </MovieDirector>
+                            ) : null
+                          )}
+                        </MovieCreditsBox>
+                      </OverviewCreditBox>
                     </>
                   )}
                 </ChosenMovie>
