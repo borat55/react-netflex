@@ -122,7 +122,7 @@ const ChosenMovie = styled(motion.div)`
   background-color: ${(props) => props.theme.black.darker};
   right: 0;
   left: 0;
-  z-index: 3;
+  z-index: 999;
   margin: 0 auto;
   border-radius: 15px;
   overflow: hidden;
@@ -135,6 +135,23 @@ const ChosenMovieCover = styled.div`
   background-position: center center;
 `;
 
+const ChosenMovieCloseBtn = styled.button`
+  cursor: pointer;
+  color: ${(props) => props.theme.white.darker};
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: ${(props) => props.theme.black.darker};
+  border: none;
+  border-radius: 50%;
+  position: absolute;
+  top: 25px;
+  right: 20px;
+  z-index: 3;
+`;
+
 const ChosenMovieTitle = styled.h2`
   color: ${(props) => props.theme.white.lighter};
   font-size: 40px;
@@ -143,22 +160,17 @@ const ChosenMovieTitle = styled.h2`
   top: -60px;
   left: 20px;
   padding: 10px;
+  width: 90%;
 `;
 
-const TitleTaglineBox = styled.div`
-  display: flex;
-  align-items: center;
-`;
-const ChosenMovieTagline = styled.h3`
+const ChosenMovieTitleTagline = styled.h3`
   color: #b1b0b0;
   font-size: 17px;
   font-weight: 600;
   position: relative;
   top: -65px;
   left: 35px;
-  &:first-child {
-    margin-right: 3px;
-  }
+  width: 90%;
 `;
 
 const YearGenreRateBox = styled.div`
@@ -184,6 +196,7 @@ const ChosenMovieGenre = styled.h4`
   font-size: 20px;
   font-weight: 600;
   margin-right: 5px;
+  white-space: nowrap;
 `;
 
 const ChosenMovieRate = styled.h4`
@@ -411,19 +424,15 @@ function Home() {
                           )})`,
                         }}
                       />
+                      <ChosenMovieCloseBtn onClick={onOverlayClick}>
+                        &times;
+                      </ChosenMovieCloseBtn>
                       <ChosenMovieTitle>
                         {movieDetail?.original_title}
                       </ChosenMovieTitle>
-                      <TitleTaglineBox>
-                        <ChosenMovieTagline>
-                          {movieDetail?.original_title} :
-                        </ChosenMovieTagline>
-
-                        <ChosenMovieTagline>
-                          {movieDetail?.tagline}
-                        </ChosenMovieTagline>
-                      </TitleTaglineBox>
-
+                      <ChosenMovieTitleTagline>
+                        {movieDetail?.original_title} : {movieDetail?.tagline}
+                      </ChosenMovieTitleTagline>
                       <YearGenreRateBox>
                         <ChosenMovieReleaseDate>
                           {movieDetail?.release_date.slice(0, 4)}
