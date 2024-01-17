@@ -1,66 +1,8 @@
 import { useRecoilValue } from "recoil";
-import styled from "styled-components";
+import * as B from "../../style component/bannerMovieStyle";
 import { moviesResult } from "../../atom";
 import { makeImagePath } from "../../utils";
 import { useNavigate } from "react-router-dom";
-
-const Banner = styled.div<{ $bgPhoto: string }>`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 60px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.$bgPhoto});
-  background-size: cover;
-`;
-
-const Title = styled.h2`
-  font-size: 68px;
-  font-weight: 900;
-  text-shadow: 3px 3px ${(props) => props.theme.black.lighter};
-  margin-bottom: 20px;
-`;
-
-const Overview = styled.p`
-  font-size: 25px;
-  text-shadow: 2px 1px ${(props) => props.theme.black.lighter};
-  width: 50%;
-`;
-
-const BannerBtns = styled.div`
-  display: flex;
-  margin-top: 20px;
-`;
-
-const PlayBtn = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  background-color: ${(props) => props.theme.white.lighter};
-  font-size: 20px;
-  width: 120px;
-  height: 40px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-right: 30px;
-  box-shadow: 2px 1px ${(props) => props.theme.black.lighter};
-  svg {
-    margin-right: 7px;
-  }
-`;
-
-const InfoBtn = styled.button`
-  border: none;
-  background-color: ${(props) => props.theme.black.lighter};
-  color: white;
-  font-size: 20px;
-  width: 180px;
-  height: 40px;
-  border-radius: 5px;
-  cursor: pointer;
-`;
 
 function BannerMovie() {
   const getMoviesResult = useRecoilValue(moviesResult);
@@ -70,17 +12,17 @@ function BannerMovie() {
   };
 
   return (
-    <Banner
+    <B.Banner
       $bgPhoto={makeImagePath(
         getMoviesResult[0]?.backdrop_path ||
           getMoviesResult[0]?.poster_path ||
           ""
       )}
     >
-      <Title>{getMoviesResult[0]?.title}</Title>
-      <Overview>{getMoviesResult[0]?.overview}</Overview>
-      <BannerBtns>
-        <PlayBtn>
+      <B.Title>{getMoviesResult[0]?.title}</B.Title>
+      <B.Overview>{getMoviesResult[0]?.overview}</B.Overview>
+      <B.BannerBtns>
+        <B.PlayBtn>
           <svg
             width="24"
             height="24"
@@ -94,12 +36,14 @@ function BannerMovie() {
             ></path>
           </svg>
           Play
-        </PlayBtn>
-        <InfoBtn onClick={() => onMovieBoxClick(Number(getMoviesResult[0].id))}>
+        </B.PlayBtn>
+        <B.InfoBtn
+          onClick={() => onMovieBoxClick(Number(getMoviesResult[0].id))}
+        >
           ⓘ Information
-        </InfoBtn>
-      </BannerBtns>
-    </Banner>
+        </B.InfoBtn>
+      </B.BannerBtns>
+    </B.Banner>
   );
 }
 
