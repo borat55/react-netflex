@@ -1,24 +1,20 @@
 import styled from "styled-components";
-import {
-  IGetMoviesResult,
-  IMovieDetails,
-  IMovieCredits,
-  getMovies,
-  getMovieDetails,
-  getMovieCredits,
-} from "../api";
+import { IGetMoviesResult, getMovies } from "../api";
 import { useQuery } from "react-query";
 import { makeImagePath } from "../utils";
-import { motion, AnimatePresence, useScroll } from "framer-motion";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
+import ChosenMovie from "../Components/movie/ChosenMovie";
+import { useSetRecoilState } from "recoil";
+import { moviesResult } from "../atom";
 
 const Wrapper = styled.div`
   background-color: black;
   height: 200vh;
 `;
 
-const Loader = styled.div`
+export const Loader = styled.div`
   height: 20vh;
   display: flex;
   justify-content: center;
@@ -153,123 +149,6 @@ const Overlay = styled(motion.div)`
   opacity: 0;
 `;
 
-const ChosenMovie = styled(motion.div)`
-  position: absolute;
-  width: 50vw;
-  height: 90vh;
-  background-color: ${(props) => props.theme.black.darker};
-  right: 0;
-  left: 0;
-  z-index: 999;
-  margin: 0 auto;
-  border-radius: 15px;
-  overflow: hidden;
-`;
-
-const ChosenMovieCover = styled.div`
-  width: 100%;
-  height: 400px;
-  background-size: cover;
-  background-position: center center;
-`;
-
-const ChosenMovieCloseBtn = styled.button`
-  cursor: pointer;
-  color: ${(props) => props.theme.white.darker};
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: ${(props) => props.theme.black.darker};
-  border: none;
-  border-radius: 50%;
-  position: absolute;
-  top: 25px;
-  right: 20px;
-  z-index: 3;
-`;
-
-const ChosenMovieTitle = styled.h2`
-  color: ${(props) => props.theme.white.lighter};
-  font-size: 40px;
-  font-weight: 700;
-  position: relative;
-  top: -60px;
-  left: 20px;
-  padding: 10px;
-  width: 90%;
-`;
-
-const ChosenMovieTitleTagline = styled.h3`
-  color: ${(props) => props.theme.white.darker};
-  font-size: 17px;
-  font-weight: 600;
-  position: relative;
-  top: -65px;
-  left: 35px;
-  width: 90%;
-`;
-
-const YearGenreRateBox = styled.div`
-  display: flex;
-  align-items: center;
-  position: relative;
-  top: -30px;
-  left: 35px;
-`;
-
-const ChosenMovieReleaseDate = styled.h4`
-  border: 1px solid ${(props) => props.theme.white.darker};
-  border-radius: 3px;
-  padding: 2px 3px;
-  color: #1cc11c;
-  font-size: 20px;
-  font-weight: 600;
-  margin-right: 13px;
-`;
-
-const ChosenMovieGenre = styled.h4`
-  color: ${(props) => props.theme.white.darker};
-  font-size: 20px;
-  font-weight: 600;
-  margin-right: 5px;
-  white-space: nowrap;
-`;
-
-const ChosenMovieRate = styled.h4`
-  color: ${(props) => props.theme.white.darker};
-  font-size: 20px;
-  font-weight: 600;
-  margin-left: 8px;
-`;
-
-const OverviewCreditBox = styled.div`
-  display: flex;
-  justify-content: space-evenly;
-`;
-
-const ChosenMovieOverview = styled.p`
-  color: ${(props) => props.theme.white.lighter};
-  font-size: 18px;
-  width: 60%;
-  line-height: 25px;
-`;
-
-const MovieCreditsBox = styled.div`
-  width: 30%;
-`;
-
-const MovieCasts = styled.h4`
-  display: inline-block;
-  margin-right: 3px;
-  line-height: 25px;
-`;
-
-const MovieDirector = styled.h4`
-  margin-top: 10px;
-`;
-
 const rowVariants = {
   hidden: (isBack: boolean) => ({
     x: isBack ? -window.outerWidth + 5 : window.outerWidth + 5,
@@ -312,27 +191,20 @@ const movieBoxVariants = {
 const offset = 6;
 
 function Home() {
-  const { scrollY } = useScroll();
   const navigate = useNavigate();
   const chosenMovieMatch = useMatch("/movies/:movieId");
+  const isResult = useSetRecoilState(moviesResult);
 
   const { data: nowPlayingMovies, isLoading: moviesLoading } =
     useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
 
-  const { data: movieDetail, isLoading: movieDetailLoading } =
-    useQuery<IMovieDetails>(
-      ["movie_detail", chosenMovieMatch?.params.movieId],
-      () => getMovieDetails(Number(chosenMovieMatch?.params.movieId))
-    );
+  useEffect(() => {
+    if (nowPlayingMovies) {
+      isResult(nowPlayingMovies.results);
+    }
+  }, [nowPlayingMovies, isResult]);
 
-  const { data: movieCredits, isLoading: movieCreditsLoading } =
-    useQuery<IMovieCredits>(
-      ["movie_credits", chosenMovieMatch?.params.movieId],
-      () => getMovieCredits(Number(chosenMovieMatch?.params.movieId))
-    );
-
-  const loading = moviesLoading || movieDetailLoading || movieCreditsLoading;
-
+  const loading = moviesLoading;
   const [index, setIndex] = useState(0);
   const [back, isBack] = useState(false);
 
@@ -364,16 +236,6 @@ function Home() {
   const onMovieBoxClick = (movieId: number) => {
     navigate(`/movies/${movieId}`);
   };
-
-  const onOverlayClick = () => {
-    navigate(-1);
-  };
-
-  const clickedMovie =
-    chosenMovieMatch?.params.movieId &&
-    nowPlayingMovies?.results.find(
-      (movie) => String(movie.id) === chosenMovieMatch.params.movieId
-    );
 
   return (
     <Wrapper>
@@ -469,76 +331,14 @@ function Home() {
             {chosenMovieMatch ? (
               <>
                 <Overlay
-                  onClick={onOverlayClick}
+                  onClick={() => {
+                    navigate(-1);
+                  }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 />
-                <ChosenMovie
-                  style={{ top: scrollY.get() + 40 }}
-                  layoutId={chosenMovieMatch.params.movieId}
-                >
-                  {clickedMovie && (
-                    <>
-                      <ChosenMovieCover
-                        style={{
-                          backgroundImage: `linear-gradient(to top, rgb(24,24,24),35%, transparent), url(${makeImagePath(
-                            clickedMovie.backdrop_path,
-                            "w500"
-                          )})`,
-                        }}
-                      />
-                      <ChosenMovieCloseBtn onClick={onOverlayClick}>
-                        &times;
-                      </ChosenMovieCloseBtn>
-                      <ChosenMovieTitle>
-                        {movieDetail?.original_title}
-                      </ChosenMovieTitle>
-                      <ChosenMovieTitleTagline>
-                        {movieDetail?.original_title} : {movieDetail?.tagline}
-                      </ChosenMovieTitleTagline>
-                      <YearGenreRateBox>
-                        <ChosenMovieReleaseDate>
-                          {movieDetail?.release_date.slice(0, 4)}
-                        </ChosenMovieReleaseDate>
-                        {movieDetail?.genres.map((genre, index) => (
-                          <ChosenMovieGenre key={genre.id}>
-                            {genre.name}
-                            {index !== movieDetail.genres.length - 1 && " ·"}
-                          </ChosenMovieGenre>
-                        ))}
-                        <ChosenMovieRate>
-                          ⭐{movieDetail?.vote_average.toFixed(1)}
-                        </ChosenMovieRate>
-                      </YearGenreRateBox>
-                      <OverviewCreditBox>
-                        <ChosenMovieOverview>
-                          {movieDetail?.overview}
-                        </ChosenMovieOverview>
-                        <MovieCreditsBox>
-                          {movieCredits?.cast.slice(0, 4).map((actor, index) =>
-                            actor.known_for_department === "Acting" ? (
-                              <MovieCasts key={actor.id}>
-                                {index === 0 ? "Casting : " : null}
-                                {actor.name}
-                                {index !==
-                                movieCredits.cast.slice(0, 4).length - 1
-                                  ? ","
-                                  : null}
-                              </MovieCasts>
-                            ) : null
-                          )}
-                          {movieCredits?.crew.map((director, index) =>
-                            director.job === "Director" ? (
-                              <MovieDirector key={director.id}>
-                                Director : {director.name}
-                              </MovieDirector>
-                            ) : null
-                          )}
-                        </MovieCreditsBox>
-                      </OverviewCreditBox>
-                    </>
-                  )}
-                </ChosenMovie>
+
+                <ChosenMovie />
               </>
             ) : null}
           </AnimatePresence>
