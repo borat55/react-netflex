@@ -40,9 +40,9 @@ const Items = styled.ul`
 
 const Item = styled.li`
   margin-right: 20px;
-  color: ${(props) => props.theme.white.darker};
+  color: ${(props) => props.theme.black.lighter};
   font-size: 15px;
-  text-shadow: 2px 2px ${(props) => props.theme.black.darker};
+  font-weight: 500;
   transition: color 0.3s ease-in-out;
   position: relative;
   display: flex;

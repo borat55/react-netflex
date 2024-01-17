@@ -27,6 +27,15 @@ const Slider = styled.div`
   top: -100px;
 `;
 
+const SliderTitle = styled.h4`
+  position: relative;
+  top: -115px;
+  font-size: 30px;
+  color: ${(props) => props.theme.white.lighter};
+
+  font-weight: 500;
+`;
+
 const Row = styled(motion.div)`
   display: grid;
   gap: 5px;
@@ -187,6 +196,7 @@ function Home() {
       ) : (
         <>
           <BannerMovie />
+          <SliderTitle>Now Play</SliderTitle>
           <Slider>
             <AnimatePresence
               custom={back}
@@ -237,6 +247,7 @@ function Home() {
               </RowBtn>
             </AnimatePresence>
           </Slider>
+
           <AnimatePresence>
             {chosenMovieMatch ? (
               <>

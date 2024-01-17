@@ -52,8 +52,8 @@ export const ChosenMovieTitle = styled.h2`
 
 export const ChosenMovieTitleTagline = styled.h3`
   color: ${(props) => props.theme.white.darker};
-  font-size: 17px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 400;
   position: relative;
   top: -65px;
   left: 35px;
