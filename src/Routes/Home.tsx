@@ -1,10 +1,14 @@
 import styled from "styled-components";
-import { IGetMoviesResult, getMovies } from "../api";
+import {
+  IGetMoviesResult,
+  getMoviePopular,
+  getNowPlayingMovies,
+  getMovieTopRate,
+  getMovieUpcoming,
+} from "../api";
+
 import { useQuery } from "react-query";
-import { useSetRecoilState } from "recoil";
-import { moviesResult, loadingMoviesResult } from "../atom";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
 import ChosenMovie from "../Components/movie/ChosenMovie";
 import BannerMovie from "../Components/movie/BannerMovie";
@@ -43,22 +47,21 @@ const Overlay = styled(motion.div)`
 function Home() {
   const navigate = useNavigate();
   const chosenMovieMatch = useMatch("/movies/:movieId");
-  const isMovieResult = useSetRecoilState(moviesResult);
-  const isLoadingMovieResult = useSetRecoilState(loadingMoviesResult);
 
   const { data: nowPlayingMovies, isLoading: moviesLoading } =
-    useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getMovies);
+    useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getNowPlayingMovies);
 
-  const loading = moviesLoading;
+  const { data: MoviePopular, isLoading: popularLoading } =
+    useQuery<IGetMoviesResult>(["movies", "popularMvies"], getMoviePopular);
 
-  useEffect(() => {
-    if (nowPlayingMovies) {
-      isMovieResult(nowPlayingMovies.results);
-    }
-    if (moviesLoading) {
-      isLoadingMovieResult((pre) => !pre);
-    }
-  }, [nowPlayingMovies, isMovieResult, moviesLoading, isLoadingMovieResult]);
+  const { data: movieTopRate, isLoading: TopRateLoading } =
+    useQuery<IGetMoviesResult>(["movies", "highRate"], getMovieTopRate);
+
+  const { data: movieUpcoming, isLoading: upcomingLoading } =
+    useQuery<IGetMoviesResult>(["movies", "upcoming"], getMovieUpcoming);
+
+  const loading =
+    moviesLoading || popularLoading || TopRateLoading || upcomingLoading;
 
   return (
     <Wrapper>
@@ -66,9 +69,19 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <BannerMovie />
+          <BannerMovie data={nowPlayingMovies} />
+
           <SliderTitle>Now Playing</SliderTitle>
-          <SliderMovie />
+          <SliderMovie data={nowPlayingMovies} />
+
+          <SliderTitle>Trending Now</SliderTitle>
+          <SliderMovie data={MoviePopular} />
+
+          <SliderTitle>High Rated</SliderTitle>
+          <SliderMovie data={movieTopRate} />
+
+          <SliderTitle>Coming soon</SliderTitle>
+          <SliderMovie data={movieUpcoming} />
 
           <AnimatePresence>
             {chosenMovieMatch ? (
@@ -81,7 +94,7 @@ function Home() {
                   exit={{ opacity: 0 }}
                 />
 
-                <ChosenMovie />
+                <ChosenMovie data={nowPlayingMovies} />
               </>
             ) : null}
           </AnimatePresence>

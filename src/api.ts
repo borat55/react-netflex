@@ -13,10 +13,6 @@ export interface IMovie {
 }
 
 export interface IGetMoviesResult {
-  dates: {
-    maximum: string;
-    minimum: string;
-  };
   page: number;
   results: IMovie[];
   total_pages: number;
@@ -58,8 +54,26 @@ export interface IMovieCredits {
   ];
 }
 
-export function getMovies() {
+export function getNowPlayingMovies() {
   return fetch(`${BASE_PATH}/movie/now_playing?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
+
+export function getMoviePopular() {
+  return fetch(`${BASE_PATH}/movie/popular?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
+
+export function getMovieTopRate() {
+  return fetch(`${BASE_PATH}/movie/top_rated?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
+
+export function getMovieUpcoming() {
+  return fetch(`${BASE_PATH}/movie/upcoming?api_key=${API_KEY}`).then(
     (response) => response.json()
   );
 }

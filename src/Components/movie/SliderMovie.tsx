@@ -3,8 +3,7 @@ import { makeImagePath } from "../../utils";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
-import { loadingMoviesResult, moviesResult } from "../../atom";
+import { IGetMoviesResult } from "../../api";
 
 const rowVariants = {
   hidden: (isBack: boolean) => ({
@@ -45,23 +44,25 @@ const movieBoxVariants = {
   },
 };
 
+export interface IMovieInfosProps {
+  data: IGetMoviesResult | undefined;
+}
+
 const offset = 6;
 
-function SliderMovie() {
+function SliderMovie({ data }: IMovieInfosProps) {
   const navigate = useNavigate();
   const [index, setIndex] = useState(0);
   const [back, isBack] = useState(false);
-  const movieResult = useRecoilValue(moviesResult);
-  const loadingMovieResult = useRecoilValue(loadingMoviesResult);
 
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((pre) => !pre);
 
   const increaseIndex = () => {
-    if (movieResult) {
-      if (loadingMovieResult) return;
+    if (data) {
+      if (leaving) return;
       toggleLeaving();
-      const totalMovies = movieResult.length - 1;
+      const totalMovies = data.results.length - 1;
       const maxIndex = Math.ceil(totalMovies / offset) - 1;
       isBack(false);
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
@@ -69,10 +70,10 @@ function SliderMovie() {
   };
 
   const decreaseIndex = () => {
-    if (movieResult) {
-      if (loadingMovieResult) return;
+    if (data) {
+      if (leaving) return;
       toggleLeaving();
-      const totalMovies = movieResult.length - 1;
+      const totalMovies = data.results.length - 1;
       const maxIndex = Math.ceil(totalMovies / offset) - 1;
       isBack(true);
       setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
@@ -99,7 +100,7 @@ function SliderMovie() {
           exit={"exit"}
           key={index}
         >
-          {movieResult
+          {data?.results
             .slice(1)
             .slice(offset * index, offset * index + offset)
             .map((movie) => (

@@ -1,11 +1,9 @@
-import { useRecoilValue } from "recoil";
 import * as B from "../../style component/bannerMovieStyle";
-import { moviesResult } from "../../atom";
+import { IMovieInfosProps } from "./SliderMovie";
 import { makeImagePath } from "../../utils";
 import { useNavigate } from "react-router-dom";
 
-function BannerMovie() {
-  const getMoviesResult = useRecoilValue(moviesResult);
+function BannerMovie({ data }: IMovieInfosProps) {
   const navigate = useNavigate();
   const onMovieBoxClick = (movieId: number) => {
     navigate(`/movies/${movieId}`);
@@ -14,13 +12,11 @@ function BannerMovie() {
   return (
     <B.Banner
       $bgPhoto={makeImagePath(
-        getMoviesResult[0]?.backdrop_path ||
-          getMoviesResult[0]?.poster_path ||
-          ""
+        data?.results[0]?.backdrop_path || data?.results[0]?.poster_path || ""
       )}
     >
-      <B.Title>{getMoviesResult[0]?.title}</B.Title>
-      <B.Overview>{getMoviesResult[0]?.overview}</B.Overview>
+      <B.Title>{data?.results[0]?.title}</B.Title>
+      <B.Overview>{data?.results[0]?.overview}</B.Overview>
       <B.BannerBtns>
         <B.PlayBtn>
           <svg
@@ -37,9 +33,7 @@ function BannerMovie() {
           </svg>
           Play
         </B.PlayBtn>
-        <B.InfoBtn
-          onClick={() => onMovieBoxClick(Number(getMoviesResult[0].id))}
-        >
+        <B.InfoBtn onClick={() => onMovieBoxClick(Number(data?.results[0].id))}>
           ⓘ Information
         </B.InfoBtn>
       </B.BannerBtns>
