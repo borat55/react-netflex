@@ -111,7 +111,6 @@ function SliderMovie({ data, title, category }: IMovieInfosProps) {
               .slice(offset * index, offset * index + offset)
               .map((movie) => (
                 <S.MovieBox
-                  layoutId={movie.id + ""}
                   key={category + movie.id}
                   variants={movieBoxVariants}
                   whileHover="hover"
