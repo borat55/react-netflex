@@ -1,7 +1,11 @@
 import * as B from "../../style component/bannerMovieStyle";
-import { IMovieInfosProps } from "./SliderMovie";
 import { makeImagePath } from "../../utils";
 import { useNavigate } from "react-router-dom";
+import { IGetMoviesResult } from "../../api";
+
+export interface IMovieInfosProps {
+  data: IGetMoviesResult | undefined;
+}
 
 function BannerMovie({ data }: IMovieInfosProps) {
   const navigate = useNavigate();

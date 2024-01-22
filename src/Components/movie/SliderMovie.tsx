@@ -2,8 +2,9 @@ import * as S from "../../style component/sliderMovieStyle";
 import { makeImagePath } from "../../utils";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 import { IGetMoviesResult } from "../../api";
+import ChosenMovie from "./ChosenMovie";
 
 const rowVariants = {
   hidden: (isBack: boolean) => ({
@@ -46,12 +47,15 @@ const movieBoxVariants = {
 
 export interface IMovieInfosProps {
   data: IGetMoviesResult | undefined;
+  title: string;
+  category: string;
 }
 
 const offset = 6;
 
-function SliderMovie({ data }: IMovieInfosProps) {
+function SliderMovie({ data, title, category }: IMovieInfosProps) {
   const navigate = useNavigate();
+  const chosenMovieMatch = useMatch("/movies/:movieId");
   const [index, setIndex] = useState(0);
   const [back, isBack] = useState(false);
 
@@ -85,56 +89,77 @@ function SliderMovie({ data }: IMovieInfosProps) {
   };
 
   return (
-    <S.Slider>
-      <AnimatePresence
-        custom={back}
-        initial={false}
-        onExitComplete={toggleLeaving}
-      >
-        <S.Row
+    <>
+      <S.Slider>
+        <S.SliderTitle>{title}</S.SliderTitle>
+        <AnimatePresence
           custom={back}
-          variants={rowVariants}
-          initial={"hidden"}
-          animate={"visible"}
-          transition={{ type: "tween", duration: 1 }}
-          exit={"exit"}
-          key={index}
+          initial={false}
+          onExitComplete={toggleLeaving}
         >
-          {data?.results
-            .slice(1)
-            .slice(offset * index, offset * index + offset)
-            .map((movie) => (
-              <S.MovieBox
-                layoutId={movie.id + ""}
-                key={movie.id}
-                variants={movieBoxVariants}
-                whileHover="hover"
-                initial="normal"
-                transition={{ type: "tween" }}
-                onClick={() => onMovieBoxClick(movie.id)}
-                $bgPhoto={makeImagePath(
-                  movie.backdrop_path || movie.poster_path,
-                  "w500"
-                )}
-              >
-                <S.MovieBoxInfo variants={infoVariants}>
-                  <h4>{movie.title}</h4>
-                </S.MovieBoxInfo>
-              </S.MovieBox>
-            ))}
-        </S.Row>
-        <S.RowBtn style={{ top: 80 }} onClick={decreaseIndex}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-            <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 278.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
-          </svg>
-        </S.RowBtn>
-        <S.RowBtn style={{ top: 80, right: 10 }} onClick={increaseIndex}>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-            <path d="M342.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L274.7 256 105.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
-          </svg>
-        </S.RowBtn>
+          <S.Row
+            custom={back}
+            variants={rowVariants}
+            initial={"hidden"}
+            animate={"visible"}
+            transition={{ type: "tween", duration: 1 }}
+            exit={"exit"}
+            key={category + index}
+          >
+            {data?.results
+              .slice(1)
+              .slice(offset * index, offset * index + offset)
+              .map((movie) => (
+                <S.MovieBox
+                  layoutId={movie.id + ""}
+                  key={category + movie.id}
+                  variants={movieBoxVariants}
+                  whileHover="hover"
+                  initial="normal"
+                  transition={{ type: "tween" }}
+                  onClick={() => onMovieBoxClick(movie.id)}
+                  $bgPhoto={makeImagePath(
+                    movie.backdrop_path || movie.poster_path,
+                    "w500"
+                  )}
+                >
+                  <S.MovieBoxInfo variants={infoVariants}>
+                    <h4>{movie.title}</h4>
+                  </S.MovieBoxInfo>
+                </S.MovieBox>
+              ))}
+          </S.Row>
+          <S.RowBtn style={{ top: 100, left: 10 }} onClick={decreaseIndex}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 278.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z" />
+            </svg>
+          </S.RowBtn>
+          <S.RowBtn style={{ top: 100, right: 10 }} onClick={increaseIndex}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path d="M342.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L274.7 256 105.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+            </svg>
+          </S.RowBtn>
+        </AnimatePresence>
+      </S.Slider>
+      <AnimatePresence>
+        {chosenMovieMatch ? (
+          <>
+            <S.Overlay
+              onClick={() => {
+                navigate(-1);
+              }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+
+            <ChosenMovie
+              category={category}
+              chosenMovieId={chosenMovieMatch?.params.movieId}
+            />
+          </>
+        ) : null}
       </AnimatePresence>
-    </S.Slider>
+    </>
   );
 }
 

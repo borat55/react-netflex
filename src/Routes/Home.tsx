@@ -6,11 +6,7 @@ import {
   getMovieTopRate,
   getMovieUpcoming,
 } from "../api";
-
 import { useQuery } from "react-query";
-import { motion, AnimatePresence } from "framer-motion";
-import { useMatch, useNavigate } from "react-router-dom";
-import ChosenMovie from "../Components/movie/ChosenMovie";
 import BannerMovie from "../Components/movie/BannerMovie";
 import SliderMovie from "../Components/movie/SliderMovie";
 
@@ -26,28 +22,7 @@ export const Loader = styled.div`
   align-items: center;
 `;
 
-const SliderTitle = styled.h4`
-  position: relative;
-  top: -115px;
-  left: 10px;
-  font-size: 30px;
-  color: ${(props) => props.theme.white.lighter};
-  font-weight: 500;
-`;
-
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-`;
-
 function Home() {
-  const navigate = useNavigate();
-  const chosenMovieMatch = useMatch("/movies/:movieId");
-
   const { data: nowPlayingMovies, isLoading: moviesLoading } =
     useQuery<IGetMoviesResult>(["movies", "nowPlaying"], getNowPlayingMovies);
 
@@ -71,33 +46,25 @@ function Home() {
         <>
           <BannerMovie data={nowPlayingMovies} />
 
-          <SliderTitle>Now Playing</SliderTitle>
-          <SliderMovie data={nowPlayingMovies} />
+          <SliderMovie
+            data={nowPlayingMovies}
+            title="Now Playing"
+            category="Now_Playing"
+          />
 
-          <SliderTitle>Trending Now</SliderTitle>
-          <SliderMovie data={MoviePopular} />
+          <SliderMovie data={MoviePopular} title="Popular" category="Popular" />
 
-          <SliderTitle>High Rated</SliderTitle>
-          <SliderMovie data={movieTopRate} />
+          <SliderMovie
+            data={movieTopRate}
+            title="Top Rated"
+            category="Top_Rated"
+          />
 
-          <SliderTitle>Coming soon</SliderTitle>
-          <SliderMovie data={movieUpcoming} />
-
-          <AnimatePresence>
-            {chosenMovieMatch ? (
-              <>
-                <Overlay
-                  onClick={() => {
-                    navigate(-1);
-                  }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                />
-
-                <ChosenMovie data={nowPlayingMovies} />
-              </>
-            ) : null}
-          </AnimatePresence>
+          <SliderMovie
+            data={movieUpcoming}
+            title="Upcoming"
+            category="Upcoming"
+          />
         </>
       )}
     </Wrapper>

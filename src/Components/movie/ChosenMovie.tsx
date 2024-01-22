@@ -1,6 +1,6 @@
 import { useScroll } from "framer-motion";
 import { makeImagePath } from "../../utils";
-import { useMatch, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import * as C from "../../style component/chosenMovieStyle";
 import {
   IMovieDetails,
@@ -9,43 +9,35 @@ import {
   getMovieCredits,
 } from "../../api";
 import { useQuery } from "react-query";
-import { IMovieInfosProps } from "./SliderMovie";
 
-const ChosenMovie = ({ data }: IMovieInfosProps) => {
+export interface IMovieInfosProps {
+  category: string;
+  chosenMovieId: string | undefined;
+}
+
+const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
   const { scrollY } = useScroll();
   const navigate = useNavigate();
-  const chosenMovieMatch = useMatch("/movies/:movieId");
 
   const { data: movieDetail, isLoading: movieDetailLoading } =
-    useQuery<IMovieDetails>(
-      ["movie_detail", chosenMovieMatch?.params.movieId],
-      () => getMovieDetails(Number(chosenMovieMatch?.params.movieId))
+    useQuery<IMovieDetails>(["movie_detail", category, chosenMovieId], () =>
+      getMovieDetails(Number(chosenMovieId))
     );
 
   const { data: movieCredits, isLoading: movieCreditsLoading } =
-    useQuery<IMovieCredits>(
-      ["movie_credits", chosenMovieMatch?.params.movieId],
-      () => getMovieCredits(Number(chosenMovieMatch?.params.movieId))
-    );
-
-  const clickedMovie =
-    chosenMovieMatch?.params.movieId &&
-    data?.results.find(
-      (movie) => String(movie.id) === chosenMovieMatch.params.movieId
+    useQuery<IMovieCredits>(["movie_credits", category, chosenMovieId], () =>
+      getMovieCredits(Number(chosenMovieId))
     );
 
   return (
     <>
-      <C.Chosen
-        style={{ top: scrollY.get() + 40 }}
-        layoutId={"" + chosenMovieMatch?.params.movieId}
-      >
-        {clickedMovie && (
+      <C.Chosen style={{ top: scrollY.get() + 40 }} layoutId={chosenMovieId}>
+        {chosenMovieId && (
           <>
             <C.ChosenMovieCover
               style={{
                 backgroundImage: `linear-gradient(to top, rgb(24,24,24),35%, transparent), url(${makeImagePath(
-                  clickedMovie.backdrop_path,
+                  movieDetail?.backdrop_path || movieDetail?.poster_path || "",
                   "w500"
                 )})`,
               }}

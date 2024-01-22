@@ -2,8 +2,19 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 
 export const Slider = styled.div`
+  height: 220px;
   position: relative;
   top: -100px;
+  margin-bottom: 60px;
+`;
+
+export const SliderTitle = styled.h4`
+  position: relative;
+  top: -15px;
+  left: 10px;
+  font-size: 30px;
+  color: ${(props) => props.theme.white.lighter};
+  font-weight: 500;
 `;
 
 export const Row = styled(motion.div)`
@@ -21,6 +32,7 @@ export const RowBtn = styled.button`
   height: 50px;
   cursor: pointer;
   position: absolute;
+  // The "top", "left", "right" are given in the component of the SliderMovie file. //
   padding: 10px;
   svg {
     fill: rgb(238, 238, 238);
@@ -60,4 +72,13 @@ export const MovieBoxInfo = styled(motion.div)`
     text-align: center;
     font-size: 18px;
   }
+`;
+
+export const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
 `;

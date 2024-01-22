@@ -21,7 +21,7 @@ root.render(
           <HelmetComponent />
           <GlobalStyle />
           <App />
-          {/* <ReactQueryDevtools initialIsOpen={true} /> */}
+          <ReactQueryDevtools initialIsOpen={true} />
         </ThemeProvider>
       </QueryClientProvider>
     </RecoilRoot>

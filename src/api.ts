@@ -20,15 +20,18 @@ export interface IGetMoviesResult {
 }
 
 export interface IMovieDetails {
+  backdrop_path: string;
   genres: [
     {
       id: number;
       name: string;
     }
   ];
+  id: number;
   original_language: string;
   original_title: string;
   overview: string;
+  poster_path: string;
   release_date: string;
   runtime: number;
   tagline: string;
@@ -36,6 +39,7 @@ export interface IMovieDetails {
 }
 
 export interface IMovieCredits {
+  id: number;
   cast: [
     {
       id: number;
