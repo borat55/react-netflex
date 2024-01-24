@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
 import { IGetMoviesResult } from "../../api";
 import ChosenMovie from "./ChosenMovie";
+import { useRecoilState } from "recoil";
+import { chosenMovieCategory } from "../../atom";
 
 const rowVariants = {
   hidden: (isBack: boolean) => ({
@@ -58,6 +60,8 @@ function SliderMovie({ data, title, category }: IMovieInfosProps) {
   const chosenMovieMatch = useMatch("/movies/:movieId");
   const [index, setIndex] = useState(0);
   const [back, isBack] = useState(false);
+  const [c_movieCategory, setC_movieCategory] =
+    useRecoilState(chosenMovieCategory);
 
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((pre) => !pre);
@@ -86,6 +90,7 @@ function SliderMovie({ data, title, category }: IMovieInfosProps) {
 
   const onMovieBoxClick = (movieId: number) => {
     navigate(`/movies/${movieId}`);
+    setC_movieCategory(category);
   };
 
   return (
@@ -111,6 +116,7 @@ function SliderMovie({ data, title, category }: IMovieInfosProps) {
               .slice(offset * index, offset * index + offset)
               .map((movie) => (
                 <S.MovieBox
+                  layoutId={category + movie.id + ""}
                   key={category + movie.id}
                   variants={movieBoxVariants}
                   whileHover="hover"

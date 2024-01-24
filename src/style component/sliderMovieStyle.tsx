@@ -35,11 +35,11 @@ export const RowBtn = styled.button`
   // The "top", "left", "right" are given in the component of the SliderMovie file. //
   padding: 10px;
   svg {
-    fill: rgb(238, 238, 238);
+    fill: ${(props) => props.theme.white.darker};
   }
   &:hover {
     svg {
-      fill: rgba(238, 238, 238, 0.7);
+      fill: ${(props) => props.theme.black.lighter};
     }
   }
 `;

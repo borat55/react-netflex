@@ -10,6 +10,8 @@ import {
 } from "../../api";
 import { useQuery } from "react-query";
 import { Loader } from "../../Routes/Home";
+import { chosenMovieCategory } from "../../atom";
+import { useRecoilValue } from "recoil";
 
 export interface IMovieInfosProps {
   category: string;
@@ -19,6 +21,7 @@ export interface IMovieInfosProps {
 const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
   const { scrollY } = useScroll();
   const navigate = useNavigate();
+  const c_movieCategory = useRecoilValue(chosenMovieCategory);
 
   const { data: movieDetail, isLoading: movieDetailLoading } =
     useQuery<IMovieDetails>(["movie_detail", category, chosenMovieId], () =>
@@ -37,7 +40,10 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
       {loading ? (
         <Loader>Loading...</Loader>
       ) : (
-        <C.Chosen style={{ top: scrollY.get() + 40 }}>
+        <C.Chosen
+          style={{ top: scrollY.get() + 40 }}
+          layoutId={c_movieCategory + chosenMovieId + ""}
+        >
           {chosenMovieId && (
             <>
               <C.ChosenMovieCover
