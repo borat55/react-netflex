@@ -1,13 +1,14 @@
 import * as B from "../../style component/bannerMovieStyle";
 import { makeImagePath } from "../../utils";
 import { useNavigate } from "react-router-dom";
-import { IGetMoviesResult } from "../../api";
+import { IGetMoviesResult, IGetTVResult } from "../../api";
 
 export interface IMovieInfosProps {
-  data: IGetMoviesResult | undefined;
+  data: IGetMoviesResult | IGetTVResult | undefined;
+  title: string | undefined;
 }
 
-function BannerMovie({ data }: IMovieInfosProps) {
+function BannerMovie({ data, title }: IMovieInfosProps) {
   const navigate = useNavigate();
   const onMovieBoxClick = (movieId: number) => {
     navigate(`/movies/${movieId}`);
@@ -19,7 +20,7 @@ function BannerMovie({ data }: IMovieInfosProps) {
         data?.results[0]?.backdrop_path || data?.results[0]?.poster_path || ""
       )}
     >
-      <B.Title>{data?.results[0]?.title}</B.Title>
+      <B.Title>{title}</B.Title>
       <B.Overview>{data?.results[0]?.overview}</B.Overview>
       <B.BannerBtns>
         <B.PlayBtn>

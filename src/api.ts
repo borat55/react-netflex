@@ -1,6 +1,8 @@
 const API_KEY = "5875916d01b46024d4e80220b502cb79";
 const BASE_PATH = "https://api.themoviedb.org/3";
 
+// ---------------------------------- Movies ------------------------------------------------
+
 export interface IMovie {
   backdrop_path: string;
   id: number;
@@ -91,5 +93,49 @@ export function getMovieDetails(movieId: number) {
 export function getMovieCredits(movieId: number) {
   return fetch(`${BASE_PATH}/movie/${movieId}/credits?api_key=${API_KEY}`).then(
     (response) => response.json()
+  );
+}
+
+// ---------------------------------- TV Series ------------------------------------------------
+
+export interface ITV {
+  backdrop_path: string;
+  id: number;
+  original_language: string;
+  overview: string;
+  poster_path: string;
+  first_air_date: string;
+  name: string;
+  vote_average: number;
+}
+
+export interface IGetTVResult {
+  page: number;
+  results: ITV[];
+  total_pages: number;
+  total_results: number;
+}
+
+export function getTVAiringToday() {
+  return fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
+
+export function getTVOnTheAir() {
+  return fetch(`${BASE_PATH}/tv/on_the_air?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
+
+export function getTVPopular() {
+  return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}`).then((response) =>
+    response.json()
+  );
+}
+
+export function getTVTopRated() {
+  return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}`).then((response) =>
+    response.json()
   );
 }

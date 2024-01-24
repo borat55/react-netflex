@@ -44,25 +44,36 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <BannerMovie data={nowPlayingMovies} />
+          <BannerMovie
+            data={nowPlayingMovies}
+            title={nowPlayingMovies?.results[0].title}
+          />
 
           <SliderMovie
             data={nowPlayingMovies}
-            title="Now Playing"
+            slidesTitle="Now Playing"
+            title={nowPlayingMovies?.results[0].title}
             category="Now_Playing"
           />
 
-          <SliderMovie data={MoviePopular} title="Popular" category="Popular" />
+          <SliderMovie
+            data={MoviePopular}
+            slidesTitle="Popular"
+            title={MoviePopular?.results[0].title}
+            category="Popular"
+          />
 
           <SliderMovie
             data={movieTopRate}
-            title="Top Rated"
+            slidesTitle="Top Rated"
+            title={movieTopRate?.results[0].title}
             category="Top_Rated"
           />
 
           <SliderMovie
             data={movieUpcoming}
-            title="Upcoming"
+            slidesTitle="Upcoming"
+            title={movieUpcoming?.results[0].title}
             category="Upcoming"
           />
         </>

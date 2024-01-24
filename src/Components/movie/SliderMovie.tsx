@@ -3,9 +3,9 @@ import { makeImagePath } from "../../utils";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
-import { IGetMoviesResult } from "../../api";
+import { IGetMoviesResult, IGetTVResult } from "../../api";
 import ChosenMovie from "./ChosenMovie";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { chosenMovieCategory } from "../../atom";
 
 const rowVariants = {
@@ -48,20 +48,20 @@ const movieBoxVariants = {
 };
 
 export interface IMovieInfosProps {
-  data: IGetMoviesResult | undefined;
-  title: string;
+  data: IGetMoviesResult | IGetTVResult | undefined;
+  slidesTitle: string;
+  title: string | undefined;
   category: string;
 }
 
 const offset = 6;
 
-function SliderMovie({ data, title, category }: IMovieInfosProps) {
+function SliderMovie({ data, slidesTitle, title, category }: IMovieInfosProps) {
   const navigate = useNavigate();
   const chosenMovieMatch = useMatch("/movies/:movieId");
   const [index, setIndex] = useState(0);
   const [back, isBack] = useState(false);
-  const [c_movieCategory, setC_movieCategory] =
-    useRecoilState(chosenMovieCategory);
+  const setC_movieCategory = useSetRecoilState(chosenMovieCategory);
 
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((pre) => !pre);
@@ -96,7 +96,7 @@ function SliderMovie({ data, title, category }: IMovieInfosProps) {
   return (
     <>
       <S.Slider>
-        <S.SliderTitle>{title}</S.SliderTitle>
+        <S.SliderTitle>{slidesTitle}</S.SliderTitle>
         <AnimatePresence
           custom={back}
           initial={false}
@@ -129,7 +129,7 @@ function SliderMovie({ data, title, category }: IMovieInfosProps) {
                   )}
                 >
                   <S.MovieBoxInfo variants={infoVariants}>
-                    <h4>{movie.title}</h4>
+                    <h4>{title}</h4>
                   </S.MovieBoxInfo>
                 </S.MovieBox>
               ))}
