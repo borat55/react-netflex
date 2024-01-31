@@ -52,29 +52,25 @@ function Home() {
           <SliderMovie
             data={nowPlayingMovies}
             slidesTitle="Now Playing"
-            title={nowPlayingMovies?.results[0].title}
-            category="Now_Playing"
+            category="MovieNowPlaying"
           />
 
           <SliderMovie
             data={MoviePopular}
             slidesTitle="Popular"
-            title={MoviePopular?.results[0].title}
-            category="Popular"
+            category="MoviePopular"
           />
 
           <SliderMovie
             data={movieTopRate}
             slidesTitle="Top Rated"
-            title={movieTopRate?.results[0].title}
-            category="Top_Rated"
+            category="MovieTopRated"
           />
 
           <SliderMovie
             data={movieUpcoming}
             slidesTitle="Upcoming"
-            title={movieUpcoming?.results[0].title}
-            category="Upcoming"
+            category="MovieUpcoming"
           />
         </>
       )}

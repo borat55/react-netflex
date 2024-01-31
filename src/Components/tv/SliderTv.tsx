@@ -3,10 +3,10 @@ import { makeImagePath } from "../../utils";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useMatch, useNavigate } from "react-router-dom";
-import { IGetMoviesResult } from "../../api";
-import ChosenMovie from "./ChosenMovie";
+import { IGetTVResult } from "../../api";
+import ChosenTV from "./ChosenTv";
 import { useSetRecoilState } from "recoil";
-import { chosenMovieCategory } from "../../atom";
+import { chosenTVCategory } from "../../atom";
 
 const rowVariants = {
   hidden: (isBack: boolean) => ({
@@ -47,20 +47,20 @@ const movieBoxVariants = {
   },
 };
 
-export interface IMovieInfosProps {
-  data: IGetMoviesResult | undefined;
+export interface ITVInfosProps {
+  data: IGetTVResult | undefined;
   slidesTitle: string;
   category: string;
 }
 
 const offset = 6;
 
-function SliderMovie({ data, slidesTitle, category }: IMovieInfosProps) {
+function SliderTv({ data, slidesTitle, category }: ITVInfosProps) {
   const navigate = useNavigate();
-  const chosenMovieMatch = useMatch("/movies/:movieId");
+  const chosenTVMatch = useMatch("/tv/:tvId");
   const [index, setIndex] = useState(0);
   const [back, isBack] = useState(false);
-  const setC_movieCategory = useSetRecoilState(chosenMovieCategory);
+  const setC_TVCategory = useSetRecoilState(chosenTVCategory);
 
   const [leaving, setLeaving] = useState(false);
   const toggleLeaving = () => setLeaving((pre) => !pre);
@@ -87,9 +87,9 @@ function SliderMovie({ data, slidesTitle, category }: IMovieInfosProps) {
     }
   };
 
-  const onMovieBoxClick = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
-    setC_movieCategory(category);
+  const onMovieBoxClick = (tvId: number) => {
+    navigate(`/tv/${tvId}`);
+    setC_TVCategory(category);
   };
 
   return (
@@ -128,7 +128,7 @@ function SliderMovie({ data, slidesTitle, category }: IMovieInfosProps) {
                   )}
                 >
                   <S.MovieBoxInfo variants={infoVariants}>
-                    <h4>{movie.title}</h4>
+                    <h4>{movie.name}</h4>
                   </S.MovieBoxInfo>
                 </S.MovieBox>
               ))}
@@ -146,7 +146,7 @@ function SliderMovie({ data, slidesTitle, category }: IMovieInfosProps) {
         </AnimatePresence>
       </S.Slider>
       <AnimatePresence>
-        {chosenMovieMatch ? (
+        {chosenTVMatch ? (
           <>
             <S.Overlay
               onClick={() => {
@@ -156,9 +156,9 @@ function SliderMovie({ data, slidesTitle, category }: IMovieInfosProps) {
               exit={{ opacity: 0 }}
             />
 
-            <ChosenMovie
+            <ChosenTV
               category={category}
-              chosenMovieId={chosenMovieMatch?.params.movieId}
+              chosenTVId={chosenTVMatch?.params.tvId}
             />
           </>
         ) : null}
@@ -167,4 +167,4 @@ function SliderMovie({ data, slidesTitle, category }: IMovieInfosProps) {
   );
 }
 
-export default SliderMovie;
+export default SliderTv;

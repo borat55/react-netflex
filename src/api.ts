@@ -116,6 +116,45 @@ export interface IGetTVResult {
   total_results: number;
 }
 
+export interface ITVDetails {
+  backdrop_path: string;
+  first_air_date: string;
+  genres: [
+    {
+      id: number;
+      name: string;
+    }
+  ];
+  id: number;
+  release_date: string;
+  original_language: string;
+  original_name: string;
+  overview: string;
+  poster_path: string;
+  tagline: string;
+  vote_average: number;
+}
+
+export interface ITVCredits {
+  cast: [
+    {
+      id: number;
+      known_for_department: string;
+      name: string;
+      character: string;
+    }
+  ];
+  crew: [
+    {
+      id: number;
+      known_for_department: string;
+      name: string;
+      job: string;
+    }
+  ];
+  id: number;
+}
+
 export function getTVAiringToday() {
   return fetch(`${BASE_PATH}/tv/airing_today?api_key=${API_KEY}`).then(
     (response) => response.json()
@@ -135,7 +174,19 @@ export function getTVPopular() {
 }
 
 export function getTVTopRated() {
-  return fetch(`${BASE_PATH}/tv/popular?api_key=${API_KEY}`).then((response) =>
+  return fetch(`${BASE_PATH}/tv/top_rated?api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
+
+export function getTVDetails(tvId: number) {
+  return fetch(`${BASE_PATH}/tv/${tvId}?api_key=${API_KEY}`).then((response) =>
     response.json()
+  );
+}
+
+export function getTVCredits(tvId: number) {
+  return fetch(`${BASE_PATH}/tv/${tvId}/credits?api_key=${API_KEY}`).then(
+    (response) => response.json()
   );
 }

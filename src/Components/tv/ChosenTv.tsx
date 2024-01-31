@@ -2,38 +2,33 @@ import { useScroll } from "framer-motion";
 import { makeImagePath } from "../../utils";
 import { useNavigate } from "react-router-dom";
 import * as C from "../../style component/chosenMovieStyle";
-import {
-  IMovieDetails,
-  IMovieCredits,
-  getMovieDetails,
-  getMovieCredits,
-} from "../../api";
 import { useQuery } from "react-query";
 import { Loader } from "../../Routes/Home";
-import { chosenMovieCategory } from "../../atom";
+import { chosenTVCategory } from "../../atom";
 import { useRecoilValue } from "recoil";
+import { getTVDetails, ITVDetails, ITVCredits, getTVCredits } from "../../api";
 
 export interface IMovieInfosProps {
   category: string;
-  chosenMovieId: string | undefined;
+  chosenTVId: string | undefined;
 }
 
-const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
+const ChosenTV = ({ category, chosenTVId }: IMovieInfosProps) => {
   const { scrollY } = useScroll();
   const navigate = useNavigate();
-  const c_movieCategory = useRecoilValue(chosenMovieCategory);
+  const c_TVCategory = useRecoilValue(chosenTVCategory);
 
-  const { data: movieDetail, isLoading: movieDetailLoading } =
-    useQuery<IMovieDetails>(["movie_details", category, chosenMovieId], () =>
-      getMovieDetails(Number(chosenMovieId))
-    );
+  const { data: TVDetail, isLoading: TVDetailLoading } = useQuery<ITVDetails>(
+    ["tv_details", category, chosenTVId],
+    () => getTVDetails(Number(chosenTVId))
+  );
 
-  const { data: movieCredits, isLoading: movieCreditsLoading } =
-    useQuery<IMovieCredits>(["movie_credits", category, chosenMovieId], () =>
-      getMovieCredits(Number(chosenMovieId))
-    );
+  const { data: TVCredits, isLoading: TVCreditLoading } = useQuery<ITVCredits>(
+    ["tv_credits", category, chosenTVId],
+    () => getTVCredits(Number(chosenTVId))
+  );
 
-  const loading = movieDetailLoading || movieCreditsLoading;
+  const loading = TVDetailLoading || TVCreditLoading;
 
   return (
     <>
@@ -42,16 +37,14 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
       ) : (
         <C.Chosen
           style={{ top: scrollY.get() + 40 }}
-          layoutId={c_movieCategory + chosenMovieId + ""}
+          layoutId={c_TVCategory + chosenTVId + ""}
         >
-          {chosenMovieId && (
+          {chosenTVId && (
             <>
               <C.ChosenMovieCover
                 style={{
                   backgroundImage: `linear-gradient(to top, rgb(24,24,24),35%, transparent), url(${makeImagePath(
-                    movieDetail?.backdrop_path ||
-                      movieDetail?.poster_path ||
-                      "",
+                    TVDetail?.backdrop_path || TVDetail?.poster_path || "",
                     "w500"
                   )})`,
                 }}
@@ -63,43 +56,42 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
               >
                 &times;
               </C.ChosenMovieCloseBtn>
-              <C.ChosenMovieTitle>
-                {movieDetail?.original_title}
-              </C.ChosenMovieTitle>
+              <C.ChosenMovieTitle>{TVDetail?.original_name}</C.ChosenMovieTitle>
               <C.ChosenMovieTitleTagline>
-                {movieDetail?.original_title} : {movieDetail?.tagline}
+                {TVDetail?.original_name} {TVDetail?.tagline ? ":" : null}{" "}
+                {TVDetail?.tagline}
               </C.ChosenMovieTitleTagline>
               <C.YearGenreRateBox>
                 <C.ChosenMovieReleaseDate>
-                  {movieDetail?.release_date.slice(0, 4)}
+                  {TVDetail?.first_air_date.slice(0, 4)}
                 </C.ChosenMovieReleaseDate>
-                {movieDetail?.genres.map((genre, index) => (
+                {TVDetail?.genres.map((genre, index) => (
                   <C.ChosenMovieGenre key={genre.id}>
                     {genre.name}
-                    {index !== movieDetail.genres.length - 1 && " ·"}
+                    {index !== TVDetail.genres.length - 1 && " ·"}
                   </C.ChosenMovieGenre>
                 ))}
                 <C.ChosenMovieRate>
-                  ⭐{movieDetail?.vote_average.toFixed(1)}
+                  ⭐{TVDetail?.vote_average.toFixed(1)}
                 </C.ChosenMovieRate>
               </C.YearGenreRateBox>
               <C.OverviewCreditBox>
                 <C.ChosenMovieOverview>
-                  {movieDetail?.overview}
+                  {TVDetail?.overview}
                 </C.ChosenMovieOverview>
                 <C.MovieCreditsBox>
-                  {movieCredits?.cast.slice(0, 4).map((actor, index) =>
+                  {TVCredits?.cast?.slice(0, 4).map((actor, index) =>
                     actor.known_for_department === "Acting" ? (
                       <C.MovieCasts key={actor.id}>
                         {index === 0 ? "Casting : " : null}
                         {actor.name}
-                        {index !== movieCredits.cast.slice(0, 4).length - 1
+                        {index !== TVCredits.cast.slice(0, 4).length - 1
                           ? ","
                           : null}
                       </C.MovieCasts>
                     ) : null
                   )}
-                  {movieCredits?.crew.map((director, index) =>
+                  {TVCredits?.crew?.map((director, index) =>
                     director.job === "Director" ? (
                       <C.MovieDirector key={director.id}>
                         Director : {director.name}
@@ -116,4 +108,4 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
   );
 };
 
-export default ChosenMovie;
+export default ChosenTV;
