@@ -1,4 +1,4 @@
-import * as S from "../../style component/sliderMovieStyle";
+import * as S from "../../style component/sliderContentsStyle";
 import { makeImagePath } from "../../utils";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -31,7 +31,7 @@ const infoVariants = {
   },
 };
 
-const movieBoxVariants = {
+const tvBoxVariants = {
   normal: {
     scale: 1,
   },
@@ -69,8 +69,8 @@ function SliderTv({ data, slidesTitle, category }: ITVInfosProps) {
     if (data) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data.results.length - 1;
-      const maxIndex = Math.ceil(totalMovies / offset) - 1;
+      const totalContents = data.results.length - 1;
+      const maxIndex = Math.ceil(totalContents / offset) - 1;
       isBack(false);
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
@@ -80,14 +80,14 @@ function SliderTv({ data, slidesTitle, category }: ITVInfosProps) {
     if (data) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data.results.length - 1;
-      const maxIndex = Math.ceil(totalMovies / offset) - 1;
+      const totalContents = data.results.length - 1;
+      const maxIndex = Math.ceil(totalContents / offset) - 1;
       isBack(true);
       setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
     }
   };
 
-  const onMovieBoxClick = (tvId: number) => {
+  const onContentsBoxClick = (tvId: number) => {
     navigate(`/tv/${tvId}`);
     setC_TVCategory(category);
   };
@@ -113,24 +113,24 @@ function SliderTv({ data, slidesTitle, category }: ITVInfosProps) {
             {data?.results
               .slice(1)
               .slice(offset * index, offset * index + offset)
-              .map((movie) => (
-                <S.MovieBox
-                  layoutId={category + movie.id + ""}
-                  key={category + movie.id}
-                  variants={movieBoxVariants}
+              .map((tv) => (
+                <S.ContentsBox
+                  layoutId={category + tv.id + ""}
+                  key={category + tv.id}
+                  variants={tvBoxVariants}
                   whileHover="hover"
                   initial="normal"
                   transition={{ type: "tween" }}
-                  onClick={() => onMovieBoxClick(movie.id)}
+                  onClick={() => onContentsBoxClick(tv.id)}
                   $bgPhoto={makeImagePath(
-                    movie.backdrop_path || movie.poster_path,
+                    tv.backdrop_path || tv.poster_path,
                     "w500"
                   )}
                 >
-                  <S.MovieBoxInfo variants={infoVariants}>
-                    <h4>{movie.name}</h4>
-                  </S.MovieBoxInfo>
-                </S.MovieBox>
+                  <S.ContentsBoxInfo variants={infoVariants}>
+                    <h4>{tv.name}</h4>
+                  </S.ContentsBoxInfo>
+                </S.ContentsBox>
               ))}
           </S.Row>
           <S.RowBtn style={{ top: 100, left: 10 }} onClick={decreaseIndex}>

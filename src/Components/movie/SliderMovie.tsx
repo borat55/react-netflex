@@ -1,4 +1,4 @@
-import * as S from "../../style component/sliderMovieStyle";
+import * as S from "../../style component/sliderContentsStyle";
 import { makeImagePath } from "../../utils";
 import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -114,7 +114,7 @@ function SliderMovie({ data, slidesTitle, category }: IMovieInfosProps) {
               .slice(1)
               .slice(offset * index, offset * index + offset)
               .map((movie) => (
-                <S.MovieBox
+                <S.ContentsBox
                   layoutId={category + movie.id + ""}
                   key={category + movie.id}
                   variants={movieBoxVariants}
@@ -127,10 +127,10 @@ function SliderMovie({ data, slidesTitle, category }: IMovieInfosProps) {
                     "w500"
                   )}
                 >
-                  <S.MovieBoxInfo variants={infoVariants}>
+                  <S.ContentsBoxInfo variants={infoVariants}>
                     <h4>{movie.title}</h4>
-                  </S.MovieBoxInfo>
-                </S.MovieBox>
+                  </S.ContentsBoxInfo>
+                </S.ContentsBox>
               ))}
           </S.Row>
           <S.RowBtn style={{ top: 100, left: 10 }} onClick={decreaseIndex}>

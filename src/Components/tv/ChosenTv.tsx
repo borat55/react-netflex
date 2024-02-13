@@ -1,19 +1,19 @@
 import { useScroll } from "framer-motion";
 import { makeImagePath } from "../../utils";
 import { useNavigate } from "react-router-dom";
-import * as C from "../../style component/chosenMovieStyle";
+import * as C from "../../style component/chosenContentsStyle";
 import { useQuery } from "react-query";
 import { Loader } from "../../Routes/Home";
 import { chosenTVCategory } from "../../atom";
 import { useRecoilValue } from "recoil";
 import { getTVDetails, ITVDetails, ITVCredits, getTVCredits } from "../../api";
 
-export interface IMovieInfosProps {
+export interface ITVInfosProps {
   category: string;
   chosenTVId: string | undefined;
 }
 
-const ChosenTV = ({ category, chosenTVId }: IMovieInfosProps) => {
+const ChosenTV = ({ category, chosenTVId }: ITVInfosProps) => {
   const { scrollY } = useScroll();
   const navigate = useNavigate();
   const c_TVCategory = useRecoilValue(chosenTVCategory);
@@ -41,7 +41,7 @@ const ChosenTV = ({ category, chosenTVId }: IMovieInfosProps) => {
         >
           {chosenTVId && (
             <>
-              <C.ChosenMovieCover
+              <C.ChosenContentsCover
                 style={{
                   backgroundImage: `linear-gradient(to top, rgb(24,24,24),35%, transparent), url(${makeImagePath(
                     TVDetail?.backdrop_path || TVDetail?.poster_path || "",
@@ -49,56 +49,58 @@ const ChosenTV = ({ category, chosenTVId }: IMovieInfosProps) => {
                   )})`,
                 }}
               />
-              <C.ChosenMovieCloseBtn
+              <C.ChosenContentsCloseBtn
                 onClick={() => {
                   navigate(-1);
                 }}
               >
                 &times;
-              </C.ChosenMovieCloseBtn>
-              <C.ChosenMovieTitle>{TVDetail?.original_name}</C.ChosenMovieTitle>
-              <C.ChosenMovieTitleTagline>
+              </C.ChosenContentsCloseBtn>
+              <C.ChosenContentsTitle>
+                {TVDetail?.original_name}
+              </C.ChosenContentsTitle>
+              <C.ChosenContentsTitleTagline>
                 {TVDetail?.original_name} {TVDetail?.tagline ? ":" : null}{" "}
                 {TVDetail?.tagline}
-              </C.ChosenMovieTitleTagline>
+              </C.ChosenContentsTitleTagline>
               <C.YearGenreRateBox>
-                <C.ChosenMovieReleaseDate>
+                <C.ChosenContentsReleaseDate>
                   {TVDetail?.first_air_date.slice(0, 4)}
-                </C.ChosenMovieReleaseDate>
+                </C.ChosenContentsReleaseDate>
                 {TVDetail?.genres.map((genre, index) => (
-                  <C.ChosenMovieGenre key={genre.id}>
+                  <C.ChosenContentsGenre key={genre.id}>
                     {genre.name}
                     {index !== TVDetail.genres.length - 1 && " ·"}
-                  </C.ChosenMovieGenre>
+                  </C.ChosenContentsGenre>
                 ))}
-                <C.ChosenMovieRate>
+                <C.ChosenContentsRate>
                   ⭐{TVDetail?.vote_average.toFixed(1)}
-                </C.ChosenMovieRate>
+                </C.ChosenContentsRate>
               </C.YearGenreRateBox>
               <C.OverviewCreditBox>
-                <C.ChosenMovieOverview>
-                  {TVDetail?.overview}
-                </C.ChosenMovieOverview>
-                <C.MovieCreditsBox>
+                <C.ChosenContentsOverview>
+                  {TVDetail?.overview || "Overview is being prepared."}
+                </C.ChosenContentsOverview>
+                <C.ContentsCreditsBox>
                   {TVCredits?.cast?.slice(0, 4).map((actor, index) =>
                     actor.known_for_department === "Acting" ? (
-                      <C.MovieCasts key={actor.id}>
+                      <C.ContentsCasts key={actor.id}>
                         {index === 0 ? "Casting : " : null}
                         {actor.name}
                         {index !== TVCredits.cast.slice(0, 4).length - 1
                           ? ","
                           : null}
-                      </C.MovieCasts>
+                      </C.ContentsCasts>
                     ) : null
                   )}
-                  {TVCredits?.crew?.map((director, index) =>
-                    director.job === "Director" ? (
-                      <C.MovieDirector key={director.id}>
-                        Director : {director.name}
-                      </C.MovieDirector>
+                  {TVCredits?.crew.map((director, index) =>
+                    director.job === "Screenplay" ? (
+                      <C.ContentsDirector key={director.id}>
+                        Writer : {director.name}
+                      </C.ContentsDirector>
                     ) : null
                   )}
-                </C.MovieCreditsBox>
+                </C.ContentsCreditsBox>
               </C.OverviewCreditBox>
             </>
           )}

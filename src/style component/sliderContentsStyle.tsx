@@ -44,7 +44,7 @@ export const RowBtn = styled.button`
   }
 `;
 
-export const MovieBox = styled(motion.div)<{ $bgPhoto: string }>`
+export const ContentsBox = styled(motion.div)<{ $bgPhoto: string }>`
   background-color: white;
   height: 200px;
   background-image: url(${(props) => props.$bgPhoto});
@@ -61,7 +61,7 @@ export const MovieBox = styled(motion.div)<{ $bgPhoto: string }>`
   }
 `;
 
-export const MovieBoxInfo = styled(motion.div)`
+export const ContentsBoxInfo = styled(motion.div)`
   padding: 10px;
   background-color: ${(props) => props.theme.black.lighter};
   opacity: 0;

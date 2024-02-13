@@ -1,17 +1,17 @@
 import * as B from "../../style component/bannerContentsStyle";
 import { makeImagePath } from "../../utils";
 import { useNavigate } from "react-router-dom";
-import { IGetMoviesResult, IGetTVResult } from "../../api";
+import { IGetTVResult } from "../../api";
 
-export interface IMovieInfosProps {
-  data: IGetMoviesResult | undefined;
+export interface ITVInfosProps {
+  data: IGetTVResult | undefined;
   title: string | undefined;
 }
 
-function BannerMovie({ data, title }: IMovieInfosProps) {
+function BannerTV({ data, title }: ITVInfosProps) {
   const navigate = useNavigate();
-  const onMovieBoxClick = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+  const onContentsBoxClick = (tvId: number) => {
+    navigate(`/tv/${tvId}`);
   };
 
   return (
@@ -38,7 +38,9 @@ function BannerMovie({ data, title }: IMovieInfosProps) {
           </svg>
           Play
         </B.PlayBtn>
-        <B.InfoBtn onClick={() => onMovieBoxClick(Number(data?.results[0].id))}>
+        <B.InfoBtn
+          onClick={() => onContentsBoxClick(Number(data?.results[0].id))}
+        >
           ⓘ Information
         </B.InfoBtn>
       </B.BannerBtns>
@@ -46,4 +48,4 @@ function BannerMovie({ data, title }: IMovieInfosProps) {
   );
 }
 
-export default BannerMovie;
+export default BannerTV;

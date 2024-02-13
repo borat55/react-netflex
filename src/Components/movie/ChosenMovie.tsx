@@ -1,7 +1,7 @@
 import { useScroll } from "framer-motion";
 import { makeImagePath } from "../../utils";
 import { useNavigate } from "react-router-dom";
-import * as C from "../../style component/chosenMovieStyle";
+import * as C from "../../style component/chosenContentsStyle";
 import {
   IMovieDetails,
   IMovieCredits,
@@ -46,7 +46,7 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
         >
           {chosenMovieId && (
             <>
-              <C.ChosenMovieCover
+              <C.ChosenContentsCover
                 style={{
                   backgroundImage: `linear-gradient(to top, rgb(24,24,24),35%, transparent), url(${makeImagePath(
                     movieDetail?.backdrop_path ||
@@ -56,57 +56,60 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
                   )})`,
                 }}
               />
-              <C.ChosenMovieCloseBtn
+              <C.ChosenContentsCloseBtn
                 onClick={() => {
                   navigate(-1);
                 }}
               >
                 &times;
-              </C.ChosenMovieCloseBtn>
-              <C.ChosenMovieTitle>
+              </C.ChosenContentsCloseBtn>
+              <C.ChosenContentsTitle>
                 {movieDetail?.original_title}
-              </C.ChosenMovieTitle>
-              <C.ChosenMovieTitleTagline>
+              </C.ChosenContentsTitle>
+              <C.ChosenContentsTitleTagline>
                 {movieDetail?.original_title} : {movieDetail?.tagline}
-              </C.ChosenMovieTitleTagline>
+              </C.ChosenContentsTitleTagline>
               <C.YearGenreRateBox>
-                <C.ChosenMovieReleaseDate>
+                <C.ChosenContentsReleaseDate>
                   {movieDetail?.release_date.slice(0, 4)}
-                </C.ChosenMovieReleaseDate>
+                </C.ChosenContentsReleaseDate>
                 {movieDetail?.genres.map((genre, index) => (
-                  <C.ChosenMovieGenre key={genre.id}>
+                  <C.ChosenContentsGenre key={genre.id}>
                     {genre.name}
                     {index !== movieDetail.genres.length - 1 && " ·"}
-                  </C.ChosenMovieGenre>
+                  </C.ChosenContentsGenre>
                 ))}
-                <C.ChosenMovieRate>
+                <C.ChosenContentsRate>
                   ⭐{movieDetail?.vote_average.toFixed(1)}
-                </C.ChosenMovieRate>
+                </C.ChosenContentsRate>
               </C.YearGenreRateBox>
               <C.OverviewCreditBox>
-                <C.ChosenMovieOverview>
+                <C.ChosenContentsOverview>
                   {movieDetail?.overview}
-                </C.ChosenMovieOverview>
-                <C.MovieCreditsBox>
+                </C.ChosenContentsOverview>
+                <C.ContentsCreditsBox>
                   {movieCredits?.cast.slice(0, 4).map((actor, index) =>
                     actor.known_for_department === "Acting" ? (
-                      <C.MovieCasts key={actor.id}>
+                      <C.ContentsCasts key={actor.id}>
                         {index === 0 ? "Casting : " : null}
                         {actor.name}
                         {index !== movieCredits.cast.slice(0, 4).length - 1
                           ? ","
                           : null}
-                      </C.MovieCasts>
+                      </C.ContentsCasts>
                     ) : null
                   )}
+
                   {movieCredits?.crew.map((director, index) =>
                     director.job === "Director" ? (
-                      <C.MovieDirector key={director.id}>
-                        Director : {director.name}
-                      </C.MovieDirector>
+                      <C.ContentsDirector key={director.id}>
+                        {index === 0 ? "Director : " : null}
+                        {director.name}
+                        {index === 0 ? "," : null}
+                      </C.ContentsDirector>
                     ) : null
                   )}
-                </C.MovieCreditsBox>
+                </C.ContentsCreditsBox>
               </C.OverviewCreditBox>
             </>
           )}

@@ -6,8 +6,8 @@ import {
   getTVTopRated,
 } from "../api";
 import { useQuery } from "react-query";
-import BannerMovie from "../Components/movie/BannerMovie";
 import SliderTv from "../Components/tv/SliderTv";
+import BannerTV from "../Components/tv/BannerTV";
 
 const Wrapper = styled.div`
   background-color: black;
@@ -39,7 +39,7 @@ function Tv() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <BannerMovie
+          <BannerTV
             data={data_AiringToday}
             title={data_AiringToday?.results[0].name}
           />
