@@ -115,6 +115,4 @@ export const ContentsCasts = styled.h4`
   line-height: 25px;
 `;
 
-export const ContentsDirector = styled.h4`
-  margin-top: 10px;
-`;
+export const CastingTitle = styled.div``;

@@ -81,11 +81,17 @@ const ChosenTV = ({ category, chosenTVId }: ITVInfosProps) => {
                 <C.ChosenContentsOverview>
                   {TVDetail?.overview || "Overview is being prepared."}
                 </C.ChosenContentsOverview>
+
                 <C.ContentsCreditsBox>
+                  {TVCredits?.cast
+                    ?.slice(0, 4)
+                    .some(
+                      (actor) => actor.known_for_department === "Acting"
+                    ) && <C.CastingTitle>Casting : </C.CastingTitle>}
+
                   {TVCredits?.cast?.slice(0, 4).map((actor, index) =>
                     actor.known_for_department === "Acting" ? (
                       <C.ContentsCasts key={actor.id}>
-                        {index === 0 ? "Casting : " : null}
                         {actor.name}
                         {index !== TVCredits.cast.slice(0, 4).length - 1
                           ? ","
@@ -93,11 +99,25 @@ const ChosenTV = ({ category, chosenTVId }: ITVInfosProps) => {
                       </C.ContentsCasts>
                     ) : null
                   )}
+
+                  {TVCredits?.crew.some(
+                    (director) =>
+                      director.job === "Director" ||
+                      director.job === "Original Story" ||
+                      director.job === "Screenplay"
+                  ) && (
+                    <C.CastingTitle style={{ marginTop: "20px" }}>
+                      Production :
+                    </C.CastingTitle>
+                  )}
+
                   {TVCredits?.crew.map((director, index) =>
+                    director.job === "Director" ||
+                    director.job === "Original Story" ||
                     director.job === "Screenplay" ? (
-                      <C.ContentsDirector key={director.id}>
-                        Writer : {director.name}
-                      </C.ContentsDirector>
+                      <C.ContentsCasts key={director.id}>
+                        {director.name},
+                      </C.ContentsCasts>
                     ) : null
                   )}
                 </C.ContentsCreditsBox>

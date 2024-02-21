@@ -102,11 +102,11 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
 
                   {movieCredits?.crew.map((director, index) =>
                     director.job === "Director" ? (
-                      <C.ContentsDirector key={director.id}>
+                      <C.ContentsCasts key={director.id}>
                         {index === 0 ? "Director : " : null}
                         {director.name}
                         {index === 0 ? "," : null}
-                      </C.ContentsDirector>
+                      </C.ContentsCasts>
                     ) : null
                   )}
                 </C.ContentsCreditsBox>
