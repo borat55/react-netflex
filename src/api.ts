@@ -190,3 +190,28 @@ export function getTVCredits(tvId: number) {
     (response) => response.json()
   );
 }
+
+// ---------------------------------- Search ------------------------------------------------
+
+export interface ISearch {
+  results: [
+    {
+      backdrop_path: string;
+      id: number;
+      original_language: string;
+      original_title: string;
+      original_name: string;
+      overview: string;
+      poster_path: string;
+      media_type: string;
+      release_date: string;
+      vote_average: number;
+    }
+  ];
+}
+
+export function getSearch(keyword: string | null) {
+  return fetch(
+    `${BASE_PATH}/search/multi?api_key=${API_KEY}&page=2&query=${keyword}`
+  ).then((response) => response.json());
+}

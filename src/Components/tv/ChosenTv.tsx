@@ -104,7 +104,12 @@ const ChosenTV = ({ category, chosenTVId }: ITVInfosProps) => {
                     (director) =>
                       director.job === "Director" ||
                       director.job === "Original Story" ||
-                      director.job === "Screenplay"
+                      director.job === "Screenplay" ||
+                      (director.job === "Executive Producer" &&
+                        director.known_for_department === "Production") ||
+                      (director.job === "Co-Executive Producer" &&
+                        director.known_for_department === "Production") ||
+                      director.known_for_department === "Writing"
                   ) && (
                     <C.CastingTitle style={{ marginTop: "20px" }}>
                       Production :
@@ -114,7 +119,12 @@ const ChosenTV = ({ category, chosenTVId }: ITVInfosProps) => {
                   {TVCredits?.crew.map((director, index) =>
                     director.job === "Director" ||
                     director.job === "Original Story" ||
-                    director.job === "Screenplay" ? (
+                    director.job === "Screenplay" ||
+                    (director.job === "Executive Producer" &&
+                      director.known_for_department === "Production") ||
+                    (director.job === "Co-Executive Producer" &&
+                      director.known_for_department === "Production") ||
+                    director.known_for_department === "Writing" ? (
                       <C.ContentsCasts key={director.id}>
                         {director.name},
                       </C.ContentsCasts>

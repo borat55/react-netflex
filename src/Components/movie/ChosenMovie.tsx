@@ -88,10 +88,15 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
                   {movieDetail?.overview}
                 </C.ChosenContentsOverview>
                 <C.ContentsCreditsBox>
+                  {movieCredits?.cast
+                    ?.slice(0, 4)
+                    .some(
+                      (actor) => actor.known_for_department === "Acting"
+                    ) && <C.CastingTitle>Casting : </C.CastingTitle>}
+
                   {movieCredits?.cast.slice(0, 4).map((actor, index) =>
                     actor.known_for_department === "Acting" ? (
                       <C.ContentsCasts key={actor.id}>
-                        {index === 0 ? "Casting : " : null}
                         {actor.name}
                         {index !== movieCredits.cast.slice(0, 4).length - 1
                           ? ","
@@ -100,10 +105,32 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
                     ) : null
                   )}
 
+                  {movieCredits?.crew.some(
+                    (director) =>
+                      (director.job === "Director" &&
+                        director.known_for_department === "Directing") ||
+                      (director.job === "Director" &&
+                        director.known_for_department === "Acting") ||
+                      (director.job === "Director" &&
+                        director.known_for_department === "Production") ||
+                      (director.job === "Director" &&
+                        director.known_for_department === "Crew")
+                  ) && (
+                    <C.CastingTitle style={{ marginTop: "20px" }}>
+                      Production :
+                    </C.CastingTitle>
+                  )}
+
                   {movieCredits?.crew.map((director, index) =>
-                    director.job === "Director" ? (
+                    (director.job === "Director" &&
+                      director.known_for_department === "Directing") ||
+                    (director.job === "Director" &&
+                      director.known_for_department === "Acting") ||
+                    (director.job === "Director" &&
+                      director.known_for_department === "Production") ||
+                    (director.job === "Director" &&
+                      director.known_for_department === "Crew") ? (
                       <C.ContentsCasts key={director.id}>
-                        {index === 0 ? "Director : " : null}
                         {director.name}
                         {index === 0 ? "," : null}
                       </C.ContentsCasts>
