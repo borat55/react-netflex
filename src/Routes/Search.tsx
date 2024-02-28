@@ -47,14 +47,25 @@ const ResultBox = styled(motion.div)<{ thum_img: string }>`
   background-size: cover;
   background-position: center center;
   cursor: pointer;
-  border-radius: 5px;
   background-image: url(${(props) => props.thum_img});
   box-shadow: 2px 2px 20px ${(props) => props.theme.black.darker};
+  background-color: ${(props) =>
+    props.thum_img === "https://image.tmdb.org/t/p/original/null"
+      ? props.theme.black.darker
+      : null};
   position: relative;
   width: 280px;
   height: 180px;
   overflow: hidden;
-  z-index: 0;
+`;
+
+export const NoImg = styled(motion.h4)`
+  font-size: 25px;
+  font-weight: 400;
+  color: ${(props) => props.theme.black.lighter};
+  position: absolute;
+  left: 10px;
+  top: 40%;
 `;
 
 const ResultContentsInfo = styled(motion.div)`
@@ -77,8 +88,8 @@ const contentsBoxVariants = {
   normal: { scale: 1 },
   hover: {
     zIndex: 1,
-    y: -50,
-    scale: 1.4,
+    y: -30,
+    scale: 1.2,
     borderRadius: "5px",
     transition: {
       delay: 0.3,
@@ -143,6 +154,10 @@ function Search() {
                     content.backdrop_path || content.poster_path
                   )}
                 >
+                  {content.backdrop_path === null &&
+                  content.poster_path === null ? (
+                    <NoImg>Image is being prepared.</NoImg>
+                  ) : null}
                   <ResultContentsInfo variants={ContentsInfoVariants}>
                     <ResultContentsInfoText
                       title_length={content.original_title.length}

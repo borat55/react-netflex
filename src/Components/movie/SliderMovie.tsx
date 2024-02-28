@@ -7,6 +7,7 @@ import { IGetMoviesResult } from "../../api";
 import ChosenMovie from "./ChosenMovie";
 import { useSetRecoilState } from "recoil";
 import { chosenMovieCategory } from "../../atom";
+import { NoImg } from "../../Routes/Search";
 
 const rowVariants = {
   hidden: (isBack: boolean) => ({
@@ -127,6 +128,9 @@ function SliderMovie({ data, slidesTitle, category }: IMovieInfosProps) {
                     "w500"
                   )}
                 >
+                  {movie.backdrop_path === null ? (
+                    <NoImg>Image is being prepared.</NoImg>
+                  ) : null}
                   <S.ContentsBoxInfo variants={infoVariants}>
                     <h4>{movie.title}</h4>
                   </S.ContentsBoxInfo>

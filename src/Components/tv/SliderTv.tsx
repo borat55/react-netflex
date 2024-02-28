@@ -7,6 +7,7 @@ import { IGetTVResult } from "../../api";
 import ChosenTV from "./ChosenTv";
 import { useSetRecoilState } from "recoil";
 import { chosenTVCategory } from "../../atom";
+import { NoImg } from "../../Routes/Search";
 
 const rowVariants = {
   hidden: (isBack: boolean) => ({
@@ -127,6 +128,9 @@ function SliderTv({ data, slidesTitle, category }: ITVInfosProps) {
                     "w500"
                   )}
                 >
+                  {tv.backdrop_path === null ? (
+                    <NoImg>Image is being prepared.</NoImg>
+                  ) : null}
                   <S.ContentsBoxInfo variants={infoVariants}>
                     <h4>{tv.name}</h4>
                   </S.ContentsBoxInfo>
