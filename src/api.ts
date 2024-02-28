@@ -204,6 +204,7 @@ export interface ISearch {
       overview: string;
       poster_path: string;
       media_type: string;
+      first_air_date: string;
       release_date: string;
       vote_average: number;
     }
