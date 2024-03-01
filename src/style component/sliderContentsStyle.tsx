@@ -82,3 +82,42 @@ export const Overlay = styled(motion.div)`
   background-color: rgba(0, 0, 0, 0.5);
   opacity: 0;
 `;
+
+export const rowVariants = {
+  hidden: (isBack: boolean) => ({
+    x: isBack ? -window.outerWidth + 5 : window.outerWidth + 5,
+  }),
+  visible: {
+    x: 0,
+  },
+  exit: (isBack: boolean) => ({
+    x: isBack ? window.outerWidth + 5 : -window.outerWidth - 5,
+  }),
+};
+
+export const infoVariants = {
+  hover: {
+    opacity: 1,
+    transition: {
+      delay: 0.3,
+      duration: 0.4,
+      type: "tween",
+    },
+  },
+};
+
+export const contentsBoxVariants = {
+  normal: {
+    scale: 1,
+  },
+  hover: {
+    scale: 1.3,
+    y: -50,
+    borderRadius: 7,
+    transition: {
+      delay: 0.3,
+      duration: 0.4,
+      type: "tween",
+    },
+  },
+};

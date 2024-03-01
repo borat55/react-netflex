@@ -9,45 +9,6 @@ import { useSetRecoilState } from "recoil";
 import { chosenTVCategory } from "../../atom";
 import { NoImg } from "../../Routes/Search";
 
-const rowVariants = {
-  hidden: (isBack: boolean) => ({
-    x: isBack ? -window.outerWidth + 5 : window.outerWidth + 5,
-  }),
-  visible: {
-    x: 0,
-  },
-  exit: (isBack: boolean) => ({
-    x: isBack ? window.outerWidth + 5 : -window.outerWidth - 5,
-  }),
-};
-
-const infoVariants = {
-  hover: {
-    opacity: 1,
-    transition: {
-      delay: 0.3,
-      duration: 0.4,
-      type: "tween",
-    },
-  },
-};
-
-const tvBoxVariants = {
-  normal: {
-    scale: 1,
-  },
-  hover: {
-    scale: 1.3,
-    y: -50,
-    borderRadius: 7,
-    transition: {
-      delay: 0.3,
-      duration: 0.4,
-      type: "tween",
-    },
-  },
-};
-
 export interface ITVInfosProps {
   data: IGetTVResult | undefined;
   slidesTitle: string;
@@ -104,7 +65,7 @@ function SliderTv({ data, slidesTitle, category }: ITVInfosProps) {
         >
           <S.Row
             custom={back}
-            variants={rowVariants}
+            variants={S.rowVariants}
             initial={"hidden"}
             animate={"visible"}
             transition={{ type: "tween", duration: 1 }}
@@ -118,7 +79,7 @@ function SliderTv({ data, slidesTitle, category }: ITVInfosProps) {
                 <S.ContentsBox
                   layoutId={category + tv.id + ""}
                   key={category + tv.id}
-                  variants={tvBoxVariants}
+                  variants={S.contentsBoxVariants}
                   whileHover="hover"
                   initial="normal"
                   transition={{ type: "tween" }}
@@ -131,7 +92,7 @@ function SliderTv({ data, slidesTitle, category }: ITVInfosProps) {
                   {tv.backdrop_path === null ? (
                     <NoImg>Image is being prepared.</NoImg>
                   ) : null}
-                  <S.ContentsBoxInfo variants={infoVariants}>
+                  <S.ContentsBoxInfo variants={S.infoVariants}>
                     <h4>{tv.name}</h4>
                   </S.ContentsBoxInfo>
                 </S.ContentsBox>

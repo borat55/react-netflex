@@ -1,10 +1,15 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useMatch, useNavigate } from "react-router-dom";
 import { getSearch, ISearch } from "../api";
 import { useQuery } from "react-query";
 import { Loader } from "./Home";
 import styled from "styled-components";
 import { makeImagePath } from "../utils";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { Overlay } from "../style component/sliderContentsStyle";
+import ChosenMovie from "../Components/movie/ChosenMovie";
+import ChosenTV from "../Components/tv/ChosenTv";
+import { useRecoilValue } from "recoil";
+import { chosenMovieCategory } from "../atom";
 
 const RecheckSearchKeyword = styled.div`
   margin: 120px 0 0 60px;
@@ -114,8 +119,11 @@ const ContentsInfoVariants = {
 function Search() {
   const location = useLocation();
   const keyword = new URLSearchParams(location.search).get("keyword");
+  const navigate = useNavigate();
+  const chosenResultBox = useMatch("/search/:contentId/detail");
+  const c_movieCategory = useRecoilValue(chosenMovieCategory);
 
-  const { data, isLoading } = useQuery<ISearch>(["searchResult", keyword], () =>
+  const { data, isLoading } = useQuery<ISearch>(["searchResult"], () =>
     getSearch(keyword)
   );
 
@@ -127,6 +135,15 @@ function Search() {
       return -1;
     return 0;
   });
+
+  const chosenContentObj = data?.results.find(
+    (chosenItem) => chosenItem.id === Number(chosenResultBox?.params.contentId)
+  );
+
+  function onResultBoxClick(contentId: number | null) {
+    navigate(`/search/${contentId}/detail`);
+    console.log("info", yearSorted);
+  }
 
   return (
     <>
@@ -147,6 +164,8 @@ function Search() {
               content.media_type === "movie" ? (
                 <ResultBox
                   key={content.id}
+                  onClick={() => onResultBoxClick(content.id)}
+                  layoutId={c_movieCategory + content.id + ""}
                   variants={contentsBoxVariants}
                   initial="normal"
                   whileHover="hover"
@@ -179,6 +198,8 @@ function Search() {
               content.media_type === "tv" ? (
                 <ResultBox
                   key={content.id}
+                  onClick={() => onResultBoxClick(content.id)}
+                  layoutId={c_movieCategory + content.id}
                   variants={contentsBoxVariants}
                   initial="normal"
                   whileHover="hover"
@@ -199,6 +220,31 @@ function Search() {
           </SearchRowResult>
         </SearchContainer>
       )}
+      <AnimatePresence>
+        {chosenResultBox ? (
+          <>
+            <Overlay
+              onClick={() => {
+                navigate(-1);
+              }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
+
+            {chosenContentObj?.media_type === "tv" ? (
+              <ChosenTV
+                category={c_movieCategory}
+                chosenTVId={chosenResultBox?.params.contentId}
+              />
+            ) : chosenContentObj?.media_type === "movie" ? (
+              <ChosenMovie
+                category={c_movieCategory}
+                chosenMovieId={chosenResultBox?.params.contentId}
+              />
+            ) : null}
+          </>
+        ) : null}
+      </AnimatePresence>
     </>
   );
 }
