@@ -34,7 +34,7 @@ const ChosenMovie = ({ category, chosenMovieId }: IMovieInfosProps) => {
     );
 
   const loading = movieDetailLoading || movieCreditsLoading;
-
+  // console.log(category);
   return (
     <>
       {loading ? (
