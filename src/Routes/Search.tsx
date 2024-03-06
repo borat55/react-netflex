@@ -10,6 +10,7 @@ import ChosenMovie from "../Components/movie/ChosenMovie";
 import ChosenTV from "../Components/tv/ChosenTv";
 import { useRecoilState } from "recoil";
 import { chosenMovieCategory, chosenTVCategory } from "../atom";
+import { useEffect } from "react";
 
 const RecheckSearchKeyword = styled.div`
   margin: 120px 0 0 60px;
@@ -126,9 +127,13 @@ function Search() {
     useRecoilState(chosenMovieCategory);
   const [c_TVCategory, setC_TVCategory] = useRecoilState(chosenTVCategory);
 
-  const { data, isLoading } = useQuery<ISearch>(["searchResult"], () =>
+  const { data, isLoading, refetch } = useQuery<ISearch>(["searchResult"], () =>
     getSearch(keyword)
   );
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, keyword]);
 
   let yearSortArray = data?.results;
   let yearSorted = yearSortArray?.sort((a, b) => {
@@ -144,7 +149,7 @@ function Search() {
   );
 
   function onResultBoxClick(contentId: number | null) {
-    navigate(`/search/${contentId}/detail`);
+    navigate(`/search/${contentId}/detail?keyword=${keyword}`);
     if (
       data?.results.find((chosenItem) => chosenItem.id === contentId)
         ?.media_type === "tv"
