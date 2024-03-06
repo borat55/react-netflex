@@ -7,7 +7,7 @@ import { IGetMoviesResult } from "../../api";
 import ChosenMovie from "./ChosenMovie";
 import { useSetRecoilState } from "recoil";
 import { chosenMovieCategory } from "../../atom";
-import { NoImg } from "../../Routes/Search";
+import { NoImg } from "../../style component/searchContentsStyle";
 
 export interface IMovieInfosProps {
   data: IGetMoviesResult | undefined;

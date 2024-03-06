@@ -2,120 +2,15 @@ import { useLocation, useMatch, useNavigate } from "react-router-dom";
 import { getSearch, ISearch } from "../api";
 import { useQuery } from "react-query";
 import { Loader } from "./Home";
-import styled from "styled-components";
 import { makeImagePath } from "../utils";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { Overlay } from "../style component/sliderContentsStyle";
 import ChosenMovie from "../Components/movie/ChosenMovie";
 import ChosenTV from "../Components/tv/ChosenTv";
 import { useRecoilState } from "recoil";
 import { chosenMovieCategory, chosenTVCategory } from "../atom";
 import { useEffect } from "react";
-
-const RecheckSearchKeyword = styled.div`
-  margin: 120px 0 0 60px;
-  display: flex;
-  align-items: center;
-`;
-
-const ResultOfSearch = styled.div`
-  color: ${(props) => props.theme.black.lighter};
-  font-size: 25px;
-  font-weight: 400;
-  margin-right: 8px;
-`;
-
-const WithKeyword = styled(ResultOfSearch)`
-  color: ${(props) => props.theme.white.darker};
-`;
-
-const SearchContainer = styled.div`
-  margin-bottom: 100px;
-`;
-
-const ResultMediaType = styled.div`
-  font-size: 28px;
-  font-weight: 400;
-  margin: 120px 0 30px 60px;
-`;
-
-const SearchRowResult = styled.div`
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
-  width: 95%;
-  margin: 0 auto;
-`;
-
-const ResultBox = styled(motion.div)<{ thum_img: string }>`
-  width: 280px;
-  height: 180px;
-  background-size: cover;
-  background-position: center center;
-  cursor: pointer;
-  background-image: url(${(props) => props.thum_img});
-  box-shadow: 2px 2px 20px ${(props) => props.theme.black.darker};
-  background-color: ${(props) =>
-    props.thum_img === "https://image.tmdb.org/t/p/original/null"
-      ? props.theme.black.darker
-      : null};
-  position: relative;
-  width: 280px;
-  height: 180px;
-  overflow: hidden;
-`;
-
-export const NoImg = styled(motion.h4)`
-  font-size: 25px;
-  font-weight: 400;
-  color: ${(props) => props.theme.black.lighter};
-  position: absolute;
-  left: 10px;
-  top: 40%;
-`;
-
-const ResultContentsInfo = styled(motion.div)`
-  color: ${(props) => props.theme.black.darker};
-  background-color: ${(props) => props.theme.black.lighter};
-  opacity: 0;
-  padding: 5px;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-`;
-
-const ResultContentsInfoText = styled.h4<{ title_length: number }>`
-  font-size: ${(props) => (props.title_length > 15 ? "15px" : "20px")};
-
-  text-align: center;
-`;
-
-const contentsBoxVariants = {
-  normal: { scale: 1 },
-  hover: {
-    zIndex: 1,
-    y: -30,
-    scale: 1.2,
-    borderRadius: "5px",
-    transition: {
-      delay: 0.3,
-      duration: 0.2,
-      type: "leaner",
-    },
-  },
-};
-
-const ContentsInfoVariants = {
-  normal: { scale: 1 },
-  hover: {
-    opacity: 1,
-    transition: {
-      delay: 0.3,
-      duration: 0.2,
-      type: "leaner",
-    },
-  },
-};
+import * as Se from "../style component/searchContentsStyle";
 
 function Search() {
   const location = useLocation();
@@ -135,12 +30,19 @@ function Search() {
     refetch();
   }, [refetch, keyword]);
 
-  let yearSortArray = data?.results;
-  let yearSorted = yearSortArray?.sort((a, b) => {
-    if (a.release_date < b.release_date || a.first_air_date < b.first_air_date)
-      return 1;
-    if (a.release_date > b.release_date || a.first_air_date > b.first_air_date)
-      return -1;
+  const movieArray = data?.results.filter(
+    (type) => type.media_type === "movie"
+  );
+  const tvArray = data?.results.filter((type) => type.media_type === "tv");
+
+  const movieYearSorted = movieArray?.sort((a, b) => {
+    if (a.release_date < b.release_date) return 1;
+    if (a.release_date > b.release_date) return -1;
+    return 0;
+  });
+  const tvYearSorted = tvArray?.sort((a, b) => {
+    if (a.first_air_date < b.first_air_date) return 1;
+    if (a.first_air_date > b.first_air_date) return -1;
     return 0;
   });
 
@@ -166,26 +68,28 @@ function Search() {
 
   return (
     <>
-      <RecheckSearchKeyword>
-        <ResultOfSearch>Result of searching with the keyword </ResultOfSearch>
-        <WithKeyword>{keyword}</WithKeyword>
-      </RecheckSearchKeyword>
+      <Se.RecheckSearchKeyword>
+        <Se.ResultOfSearch>
+          Result of searching with the keyword{" "}
+        </Se.ResultOfSearch>
+        <Se.WithKeyword>{keyword}</Se.WithKeyword>
+      </Se.RecheckSearchKeyword>
       {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (
-        <SearchContainer>
-          {yearSorted?.map((content) => content.media_type === "movie") ? (
-            <ResultMediaType> 🎬 Movies : </ResultMediaType>
+        <Se.SearchContainer>
+          {movieYearSorted ? (
+            <Se.ResultMediaType> 🎬 Movies : </Se.ResultMediaType>
           ) : null}
 
-          <SearchRowResult>
-            {yearSorted?.map((content) =>
+          <Se.SearchRowResult>
+            {movieYearSorted?.map((content) =>
               content.media_type === "movie" ? (
-                <ResultBox
+                <Se.ResultBox
                   key={content.id}
                   onClick={() => onResultBoxClick(content.id)}
                   layoutId={c_movieCategory + content.id + ""}
-                  variants={contentsBoxVariants}
+                  variants={Se.contentsBoxVariants}
                   initial="normal"
                   whileHover="hover"
                   thum_img={makeImagePath(
@@ -194,50 +98,54 @@ function Search() {
                 >
                   {content.backdrop_path === null &&
                   content.poster_path === null ? (
-                    <NoImg>Image is being prepared.</NoImg>
+                    <Se.NoImg>Image is being prepared.</Se.NoImg>
                   ) : null}
-                  <ResultContentsInfo variants={ContentsInfoVariants}>
-                    <ResultContentsInfoText
+                  <Se.ResultContentsInfo variants={Se.ContentsInfoVariants}>
+                    <Se.ResultContentsInfoText
                       title_length={content.original_title.length}
                     >
                       {content.original_title}
-                    </ResultContentsInfoText>
-                  </ResultContentsInfo>
-                </ResultBox>
+                    </Se.ResultContentsInfoText>
+                  </Se.ResultContentsInfo>
+                </Se.ResultBox>
               ) : null
             )}
-          </SearchRowResult>
+          </Se.SearchRowResult>
 
-          {yearSorted?.map((content) => content.media_type === "tv") ? (
-            <ResultMediaType>📺 TV Series : </ResultMediaType>
+          {tvYearSorted ? (
+            <Se.ResultMediaType>📺 TV Series : </Se.ResultMediaType>
           ) : null}
 
-          <SearchRowResult>
-            {yearSorted?.map((content) =>
+          <Se.SearchRowResult>
+            {tvYearSorted?.map((content) =>
               content.media_type === "tv" ? (
-                <ResultBox
+                <Se.ResultBox
                   key={content.id}
                   onClick={() => onResultBoxClick(content.id)}
                   layoutId={c_TVCategory + content.id}
-                  variants={contentsBoxVariants}
+                  variants={Se.contentsBoxVariants}
                   initial="normal"
                   whileHover="hover"
                   thum_img={makeImagePath(
                     content.backdrop_path || content.poster_path
                   )}
                 >
-                  <ResultContentsInfo variants={ContentsInfoVariants}>
-                    <ResultContentsInfoText
+                  {content.backdrop_path === null &&
+                  content.poster_path === null ? (
+                    <Se.NoImg>Image is being prepared.</Se.NoImg>
+                  ) : null}
+                  <Se.ResultContentsInfo variants={Se.ContentsInfoVariants}>
+                    <Se.ResultContentsInfoText
                       title_length={content.original_name.length}
                     >
                       {content.original_name}
-                    </ResultContentsInfoText>
-                  </ResultContentsInfo>
-                </ResultBox>
+                    </Se.ResultContentsInfoText>
+                  </Se.ResultContentsInfo>
+                </Se.ResultBox>
               ) : null
             )}
-          </SearchRowResult>
-        </SearchContainer>
+          </Se.SearchRowResult>
+        </Se.SearchContainer>
       )}
       <AnimatePresence>
         {chosenResultBox ? (

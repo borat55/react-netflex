@@ -7,7 +7,7 @@ import { IGetTVResult } from "../../api";
 import ChosenTV from "./ChosenTv";
 import { useSetRecoilState } from "recoil";
 import { chosenTVCategory } from "../../atom";
-import { NoImg } from "../../Routes/Search";
+import { NoImg } from "../../style component/searchContentsStyle";
 
 export interface ITVInfosProps {
   data: IGetTVResult | undefined;
