@@ -132,9 +132,9 @@ function Search() {
 
   let yearSortArray = data?.results;
   let yearSorted = yearSortArray?.sort((a, b) => {
-    if (a.release_date > b.release_date || a.first_air_date > b.first_air_date)
-      return 1;
     if (a.release_date < b.release_date || a.first_air_date < b.first_air_date)
+      return 1;
+    if (a.release_date > b.release_date || a.first_air_date > b.first_air_date)
       return -1;
     return 0;
   });
@@ -150,14 +150,12 @@ function Search() {
         ?.media_type === "tv"
     ) {
       setC_TVCategory("searchedTv");
-      console.log("setting the TVcategory done");
     }
     if (
       data?.results.find((chosenItem) => chosenItem.id === contentId)
         ?.media_type === "movie"
     ) {
       setC_movieCategory("searchedMovie");
-      console.log("setting the Moviecategory done");
     }
   }
 

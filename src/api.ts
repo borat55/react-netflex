@@ -213,6 +213,6 @@ export interface ISearch {
 
 export function getSearch(keyword: string | null) {
   return fetch(
-    `${BASE_PATH}/search/multi?api_key=${API_KEY}&page=2&query=${keyword}`
+    `${BASE_PATH}/search/multi?api_key=${API_KEY}&page=1&query=${keyword}`
   ).then((response) => response.json());
 }

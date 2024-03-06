@@ -134,9 +134,10 @@ function Header() {
     });
   }, [navAnimation, scrollY]);
 
-  const { register, handleSubmit } = useForm<IForm>();
+  const { register, handleSubmit, reset } = useForm<IForm>();
   const onValid = (data: IForm) => {
     navigate(`/search?keyword=${data.keyword}`);
+    reset();
   };
 
   return (
